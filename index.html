@@ -190,9 +190,9 @@
     </div>
     <div class="landing-tagline">SEBI Registered Research Analyst</div>
     <div class="landing-title">Nifty &amp; Mid-Cap Research</div>
-    <div class="landing-sub">Data-driven stock picks, technical levels &amp; fair-value analysis â built to help you make informed investment decisions.</div>
-    <button class="landing-cta" onclick="enterDashboard()">Enter Dashboard â</button>
-    <div class="landing-reg">SEBI RA Â· INH000021252</div>
+    <div class="landing-sub">Data-driven stock picks, technical levels &amp; fair-value analysis — built to help you make informed investment decisions.</div>
+    <button class="landing-cta" onclick="enterDashboard()">Enter Dashboard →</button>
+    <div class="landing-reg">SEBI RA · INH000021252</div>
     <div class="landing-disclaimer">
       <b>RA Divyani Thakur</b> is a SEBI Registered Research Analyst (Reg. No. INH000021252). This is for informational/educational purposes only and does not constitute personalised investment advice. Investments in securities market are subject to market risks. Please consult your own financial advisor before investing.
     </div>
@@ -254,8 +254,8 @@
     <!-- OVERVIEW -->
     <div id="overview-view">
       <div class="page-title">Mid-Cap Research Overview</div>
-      <div class="page-sub">Monthly stock recommendations Â· Reviewed on the 1st of every month</div>
-      <div class="reg-chip">Research by RA Divyani Thakur â Reg. No. INH000021252</div>
+      <div class="page-sub">Monthly stock recommendations · Reviewed on the 1st of every month</div>
+      <div class="reg-chip">Research by RA Divyani Thakur — Reg. No. INH000021252</div>
 
       <div class="stat-row">
         <div class="stat"><div class="stat-label">Total Return (5Y)</div><div class="stat-value" style="color:var(--pos)">+540.2%</div></div>
@@ -280,7 +280,7 @@
       <div class="section-label">This Month's Action Plan</div>
       <div class="action-plan" id="actionPlan"></div>
 
-      <div class="section-label" id="tableLabel">Monthly Picks â July 2026</div>
+      <div class="section-label" id="tableLabel">Monthly Picks — July 2026</div>
       <table>
         <thead>
           <tr><th>Name</th><th>Price Added</th><th>Return</th><th>Action</th><th>Glance</th></tr>
@@ -405,14 +405,14 @@ function fmtPct(v){
 function renderTable(){
   const month=document.getElementById('monthSelect').value;
   monthsData[month] = monthsData[month] || [];
-  document.getElementById('tableLabel').textContent = 'Monthly Picks â ' + month;
+  document.getElementById('tableLabel').textContent = 'Monthly Picks — ' + month;
   const q=(document.getElementById('searchInput').value||'').toLowerCase();
   const rows=monthsData[month].filter(s=> s.name.toLowerCase().includes(q) || s.ticker.toLowerCase().includes(q));
   const body=document.getElementById('picksBody');
   body.innerHTML = rows.map(s=>`
     <tr data-month="${escAttr(month)}" data-ticker="${escAttr(s.ticker)}" class="pick-row">
-      <td><div class="row-name">${escHtml(s.name)}</div><div class="row-ticker">${escHtml(s.ticker)} Â· ${escHtml(s.sector)}</div></td>
-      <td class="row-ticker">â¹${s.priceAdded}</td>
+      <td><div class="row-name">${escHtml(s.name)}</div><div class="row-ticker">${escHtml(s.ticker)} · ${escHtml(s.sector)}</div></td>
+      <td class="row-ticker">₹${s.priceAdded}</td>
       <td>${fmtPct(s.returnPct)}</td>
       <td><span class="action-tag ${s.action==='Added'?'tag-added':'tag-removed'}">${s.action==='Added'?'Added':'Booked'}</span></td>
       <td>${s.researchPdf
@@ -428,7 +428,7 @@ function renderActionPlan(month){
   const list = monthsData[month] || [];
   const toAdd = list.filter(s => s.action === 'Added');
   const booked = list.filter(s => s.action !== 'Added');
-  const row = s => `<div class="action-row"><span><span class="a-name">${escHtml(s.name)}</span><span class="a-ticker">${escHtml(s.ticker)}</span></span><span>â¹${s.priceAdded}</span></div>`;
+  const row = s => `<div class="action-row"><span><span class="a-name">${escHtml(s.name)}</span><span class="a-ticker">${escHtml(s.ticker)}</span></span><span>₹${s.priceAdded}</span></div>`;
   box.innerHTML = `
     <div class="action-col">
       <div class="action-col-head" style="color:var(--pos)"><span class="dot" style="background:var(--pos)"></span>To Buy / Added (${toAdd.length})</div>
@@ -446,7 +446,7 @@ function escHtml(str){
 }
 function escAttr(str){ return escHtml(str); }
 
-// Event delegation for the picks table â avoids any bugs from stock
+// Event delegation for the picks table — avoids any bugs from stock
 // names/tickers containing special characters like quotes.
 document.addEventListener('click', function(e){
   const researchBtn = e.target.closest('[data-action="research"]');
@@ -485,16 +485,16 @@ function openResearch(month, ticker){
     const url = dataUrlToObjectUrl(stock.researchPdf);
     const win = window.open(url, '_blank');
     if(!win){
-      alert('Popup blocked â please allow popups to view the research PDF, or check your browser settings.');
+      alert('Popup blocked — please allow popups to view the research PDF, or check your browser settings.');
     }
   }catch(err){
-    alert('Could not open the Research PDF. The file may be corrupted â try re-uploading it.');
+    alert('Could not open the Research PDF. The file may be corrupted — try re-uploading it.');
   }
 }
 
 // Converts a base64 data: URL into a blob: URL. Chrome/Edge block direct
 // top-level navigation to large data: URLs (that's why the Research button
-// wasn't opening) â blob: URLs don't have that restriction.
+// wasn't opening) — blob: URLs don't have that restriction.
 function dataUrlToObjectUrl(dataUrl){
   const commaIdx = dataUrl.indexOf(',');
   const header = dataUrl.slice(0, commaIdx);
@@ -515,8 +515,8 @@ function showDetail(month, ticker){
   document.getElementById('detail-view').style.display='block';
 
   document.getElementById('d-name').textContent=stock.name;
-  document.getElementById('d-sub').textContent=`${stock.ticker} Â· ${stock.sector} Â· NSE`;
-  document.getElementById('d-price').textContent='â¹'+stock.currentPrice;
+  document.getElementById('d-sub').textContent=`${stock.ticker} · ${stock.sector} · NSE`;
+  document.getElementById('d-price').textContent='₹'+stock.currentPrice;
   document.getElementById('d-change').innerHTML=fmtPct(stock.returnPct)+' since added';
 
   const pos=getComputedStyle(document.body).getPropertyValue('--pos-line').trim();
@@ -535,7 +535,7 @@ function showDetail(month, ticker){
   document.getElementById('d-summary').textContent=stock.summary;
   document.getElementById('d-upside').textContent=(stock.upside>=0?'+':'')+stock.upside.toFixed(1)+'%';
   document.getElementById('d-upside').style.color = stock.upside>=0? 'var(--pos)':'var(--neg)';
-  document.getElementById('d-fairprice').textContent='Fair Value: â¹'+stock.fairPrice.toFixed(1);
+  document.getElementById('d-fairprice').textContent='Fair Value: ₹'+stock.fairPrice.toFixed(1);
 
   document.getElementById('d-growth-val').textContent=stock.growth.toFixed(1)+'/10';
   document.getElementById('d-growth-bar').style.width=(stock.growth*10)+'%';
@@ -550,7 +550,7 @@ let editingMonth = null;
 
 // stockLibrary: permanent record of every stock ever entered, keyed by ticker.
 // This is NEVER auto-deleted. Removing a pick from a month only unlists it
-// from that month's array â the full record (indicators, chart, summary,
+// from that month's array — the full record (indicators, chart, summary,
 // fair value etc.) always stays here so it can be reused later.
 let stockLibrary = {};
 
@@ -577,7 +577,7 @@ function loadLibrary(){
     const raw = localStorage.getItem('analystedge_library');
     if(raw){ stockLibrary = JSON.parse(raw); return; }
   }catch(e){ /* fall through to seeding */ }
-  // First run â seed the library from whatever is already in monthsData
+  // First run — seed the library from whatever is already in monthsData
   // so nothing already in the dashboard is ever lost.
   Object.values(monthsData).forEach(list => list.forEach(s => {
     if(!stockLibrary[s.ticker]) upsertLibrarySilent(s);
@@ -601,7 +601,7 @@ function populateReuseSelect(){
   if(!sel) return;
   const current = sel.value;
   const tickers = Object.keys(stockLibrary).sort();
-  sel.innerHTML = '<option value="">â Naya stock (fresh add) â</option>' +
+  sel.innerHTML = '<option value="">— Naya stock (fresh add) —</option>' +
     tickers.map(t => `<option value="${t}">${stockLibrary[t].name} (${t})</option>`).join('');
   if(tickers.includes(current)) sel.value = current;
 }
@@ -623,7 +623,7 @@ function handleResearchFile(event){
   reader.onload = () => {
     pendingResearchPdf = reader.result;
     status.style.color = 'var(--pos)';
-    status.textContent = '"' + file.name + '" attached â it will be saved when you click "Add to Dashboard".';
+    status.textContent = '"' + file.name + '" attached — it will be saved when you click "Add to Dashboard".';
   };
   reader.onerror = () => {
     status.style.color = 'var(--neg)';
@@ -647,10 +647,10 @@ function loadFromLibrary(ticker){
   document.getElementById('admRationale').value = lib.lastRationale || lib.summary || '';
   pendingResearchPdf = lib.researchPdf || null;
   document.getElementById('admStatus').style.color = 'var(--buy)';
-  document.getElementById('admStatus').textContent = lib.name + "'s previous data has been loaded â update the price/action/rationale and click \"Add to Dashboard\".";
+  document.getElementById('admStatus').textContent = lib.name + "'s previous data has been loaded — update the price/action/rationale and click \"Add to Dashboard\".";
   if(status){
     status.style.color = 'var(--ink-soft)';
-    status.textContent = lib.researchPdf ? 'The existing research PDF will carry over (choose a new file to replace it).' : "No research PDF for this yet â you can upload one here if you'd like.";
+    status.textContent = lib.researchPdf ? 'The existing research PDF will carry over (choose a new file to replace it).' : "No research PDF for this yet — you can upload one here if you'd like.";
   }
 }
 
@@ -679,6 +679,7 @@ function loadMonths(){
   }
   // make sure every month that exists in monthsData is represented, and vice versa
   Object.keys(monthsData).forEach(m => { if(!allMonths.includes(m)) allMonths.push(m); });
+  allMonths = allMonths.filter(m => String(m).trim()); // drop blank entries so the Month dropdown is never empty
   allMonths.forEach(m => { if(!monthsData[m]) monthsData[m] = []; });
   allMonths.sort((a,b)=> monthSortKey(a)-monthSortKey(b));
   saveMonths();
@@ -704,13 +705,13 @@ function addNewMonth(){
   const match = /^([A-Za-z]{3,9})\s(\d{4})$/.exec(val);
   if(!match){
     status.style.color = 'var(--neg)';
-    status.textContent = 'Incorrect format â write it like "Aug 2026" (3-letter month + space + year).';
+    status.textContent = 'Incorrect format — write it like "Aug 2026" (3-letter month + space + year).';
     return;
   }
   const abbr = match[1].slice(0,3).charAt(0).toUpperCase()+match[1].slice(1,3).toLowerCase();
   if(!(abbr in MONTH_ABBR)){
     status.style.color = 'var(--neg)';
-    status.textContent = 'Could not recognize the month name â use Jan, Feb, Mar ... Dec.';
+    status.textContent = 'Could not recognize the month name — use Jan, Feb, Mar ... Dec.';
     return;
   }
   const normalized = abbr + ' ' + match[2];
@@ -729,7 +730,7 @@ function addNewMonth(){
     renderTable();
     renderAdminList();
     status.style.color = 'var(--pos)';
-    status.textContent = normalized + ' added â now select it from the dropdown to add stocks.';
+    status.textContent = normalized + ' added — now select it from the dropdown to add stocks.';
   }
   input.value = '';
 }
@@ -783,7 +784,7 @@ function renderAdminList(){
     <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border);">
       <div>
         <div style="font-weight:700; font-size:17px;">${escHtml(s.name)} <span style="color:var(--ink-soft); font-family:var(--font-mono); font-size:14px;">${escHtml(s.ticker)}</span></div>
-        <div style="font-size:14.5px; color:var(--ink-soft);">â¹${s.priceAdded} â â¹${s.currentPrice} Â· ${s.action==='Added'?'Added':'Booked'}${s.researchPdf ? ' Â· ð PDF attached' : ''}</div>
+        <div style="font-size:14.5px; color:var(--ink-soft);">₹${s.priceAdded} → ₹${s.currentPrice} · ${s.action==='Added'?'Added':'Booked'}${s.researchPdf ? ' · 📄 PDF attached' : ''}</div>
       </div>
       <div style="display:flex; gap:8px;">
         <button data-action="edit-pick" data-month="${escAttr(month)}" data-index="${i}" style="background:var(--surface-2); border:1px solid var(--border); color:var(--ink); padding:6px 12px; border-radius:7px; font-size:15px; cursor:pointer;">Edit</button>
@@ -829,7 +830,7 @@ function cancelEdit(){
 }
 
 function deleteStock(month, index){
-  if(!confirm('Remove this pick from the "'+month+'" list?\n\nThe data will NOT be deleted â the full record (indicators, chart, summary) stays safe in history. You can add it back to any month later in one click via "Reuse From History".')) return;
+  if(!confirm('Remove this pick from the "'+month+'" list?\n\nThe data will NOT be deleted — the full record (indicators, chart, summary) stays safe in history. You can add it back to any month later in one click via "Reuse From History".')) return;
   monthsData[month].splice(index,1);
   saveData();
   renderTable();
@@ -844,7 +845,7 @@ function addStock(){
   const priceAdded = parseFloat(document.getElementById('admPrice').value) || 0;
   const currentPrice = parseFloat(document.getElementById('admCurrent').value) || priceAdded;
   const action = document.getElementById('admAction').value;
-  const rationale = document.getElementById('admRationale').value.trim() || 'Research pending â details will be updated.';
+  const rationale = document.getElementById('admRationale').value.trim() || 'Research pending — details will be updated.';
 
   if(!name || !ticker || !priceAdded){
     document.getElementById('admStatus').style.color='var(--neg)';
@@ -862,7 +863,7 @@ function addStock(){
   const lib = reuse ? stockLibrary[ticker] : null;
 
   const chart = lib ? lib.chart : [priceAdded*0.94, priceAdded*0.97, priceAdded, priceAdded*1.02, priceAdded*1.05, priceAdded*1.03, currentPrice*0.99, currentPrice];
-  const indicators = lib ? lib.indicators : {"52W Range":"â","Market Cap":"â","P/E Ratio":"â","P/E (Fwd.)":"â","EPS Actual":"â","EPS Estimate":"â","PEG Ratio":"â","FCF Yield":"â","EV/EBITDA":"â","Beta (5Y)":"â","Div Yield":"â","Next Earnings":"â"};
+  const indicators = lib ? lib.indicators : {"52W Range":"—","Market Cap":"—","P/E Ratio":"—","P/E (Fwd.)":"—","EPS Actual":"—","EPS Estimate":"—","PEG Ratio":"—","FCF Yield":"—","EV/EBITDA":"—","Beta (5Y)":"—","Div Yield":"—","Next Earnings":"—"};
   const summary = lib ? (rationale || lib.summary) : rationale;
   const upside = lib ? lib.upside : Number((returnPct*0.6).toFixed(1));
   const fairPrice = lib ? lib.fairPrice : Number((currentPrice*1.12).toFixed(1));
@@ -897,7 +898,7 @@ function addStock(){
     pendingResearchPdf = null;
   }
 
-  // Always keep the permanent library up to date â this record now
+  // Always keep the permanent library up to date — this record now
   // persists forever, independent of whether it's "Added" or "Removed"
   // in any given month.
   upsertLibrary(finalStock);
