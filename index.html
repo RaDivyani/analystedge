@@ -287,6 +287,26 @@
         </thead>
         <tbody id="picksBody"></tbody>
       </table>
+
+      <div id="stock20Section" style="display:none;">
+        <div class="section-label" style="margin-top:34px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+          <span>Stock20 — Mid-Cap Movers Watchlist</span>
+          <span id="stock20Updated" style="font-size:13px; text-transform:none; letter-spacing:0; color:var(--ink-soft); font-weight:600;"></span>
+        </div>
+        <div style="overflow-x:auto; border:1px solid var(--border); border-radius:14px; background:var(--surface);">
+          <table style="border:none; border-radius:0; min-width:980px;">
+            <thead>
+              <tr>
+                <th>Name</th><th>Price</th><th>Day %</th><th>1M %</th>
+                <th>52W Range</th><th>Mkt Cap</th><th>P/E</th><th>P/B</th>
+                <th>Div Yld</th><th>Trend</th>
+              </tr>
+            </thead>
+            <tbody id="stock20Body"></tbody>
+          </table>
+        </div>
+        <div class="chart-note" style="margin-top:8px;">Data auto-updated daily after market close (source: exchange data via Yahoo Finance). For information/education only — not personalised investment advice.</div>
+      </div>
     </div>
 
     <!-- DETAIL -->
@@ -972,6 +992,70 @@ async function fetchRemoteData(manual){
 loadData();
 fetchRemoteData(false);
 setInterval(()=> fetchRemoteData(false), AUTO_REFRESH_MS);
+
+/* ============================================================
+   STOCK20 — Mid-Cap Movers Watchlist
+   Reads stock20.json (auto-generated daily by GitHub Actions)
+   and renders the live table. Section stays hidden until the
+   file exists and has stocks.
+   ============================================================ */
+function fmtCap(v){
+  if(v == null) return '—';
+  if(v >= 1e12) return '₹' + (v/1e12).toFixed(2) + ' L Cr';
+  if(v >= 1e9)  return '₹' + (v/1e9).toFixed(1) + ' K Cr';
+  if(v >= 1e7)  return '₹' + (v/1e7).toFixed(0) + ' Cr';
+  return '₹' + Math.round(v).toLocaleString('en-IN');
+}
+function pctCell(v){
+  if(v == null) return '<td style="color:var(--ink-soft);">—</td>';
+  const c = v >= 0 ? 'var(--pos)' : 'var(--neg)';
+  const sign = v >= 0 ? '+' : '';
+  return '<td style="color:' + c + '; font-weight:700; white-space:nowrap;">' + sign + v.toFixed(2) + '%</td>';
+}
+function rangeBar(low, high, price){
+  if(low == null || high == null || price == null || high <= low) return '<td style="color:var(--ink-soft);">—</td>';
+  const pos = Math.max(0, Math.min(100, (price - low) / (high - low) * 100));
+  return '<td style="min-width:150px;">' +
+    '<div style="font-size:12.5px; color:var(--ink-soft); display:flex; justify-content:space-between; margin-bottom:3px;"><span>' + low.toFixed(0) + '</span><span>' + high.toFixed(0) + '</span></div>' +
+    '<div style="height:6px; background:var(--surface-2); border:1px solid var(--border); border-radius:100px; position:relative;">' +
+      '<div style="position:absolute; left:' + pos.toFixed(1) + '%; top:50%; transform:translate(-50%,-50%); width:11px; height:11px; border-radius:50%; background:var(--buy); border:2px solid var(--surface);"></div>' +
+    '</div></td>';
+}
+function trendBadge(t){
+  if(!t) return '<td style="color:var(--ink-soft);">—</td>';
+  const map = { 'Uptrend': ['var(--pos)','var(--pos-bg)','▲'], 'Downtrend': ['var(--neg)','var(--neg-bg)','▼'], 'Sideways': ['var(--hold)','var(--hold-bg)','■'] };
+  const m = map[t] || ['var(--ink-soft)','var(--surface-2)','•'];
+  return '<td><span style="display:inline-block; padding:4px 12px; border-radius:100px; font-size:13.5px; font-weight:700; color:' + m[0] + '; background:' + m[1] + '; white-space:nowrap;">' + m[2] + ' ' + t + '</span></td>';
+}
+
+async function fetchStock20(){
+  try{
+    const res = await fetch('stock20.json?v=' + Date.now(), { cache: 'no-store' });
+    if(!res.ok) return;
+    const d = await res.json();
+    if(!d || !Array.isArray(d.stocks) || !d.stocks.length) return;
+    const body = document.getElementById('stock20Body');
+    body.innerHTML = d.stocks.map(s =>
+      '<tr style="cursor:default;">' +
+        '<td><div style="font-weight:700;">' + (s.name || s.symbol) + '</div><div style="font-size:13px; color:var(--ink-soft); font-family:var(--font-mono);">' + s.symbol + '</div></td>' +
+        '<td style="font-family:var(--font-mono); font-weight:700; white-space:nowrap;">' + (s.price != null ? '₹' + s.price.toLocaleString('en-IN') : '—') + '</td>' +
+        pctCell(s.dayPct) +
+        pctCell(s.m1Pct) +
+        rangeBar(s.w52Low, s.w52High, s.price) +
+        '<td style="white-space:nowrap;">' + fmtCap(s.mktCap) + '</td>' +
+        '<td>' + (s.pe != null ? s.pe : '—') + '</td>' +
+        '<td>' + (s.pb != null ? s.pb : '—') + '</td>' +
+        '<td>' + (s.divYield != null ? s.divYield + '%' : '—') + '</td>' +
+        trendBadge(s.trend) +
+      '</tr>'
+    ).join('');
+    const t = d.updatedAt ? new Date(d.updatedAt) : null;
+    document.getElementById('stock20Updated').textContent = t ? 'Updated ' + t.toLocaleDateString('en-IN',{day:'numeric',month:'short'}) + ', ' + t.toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'}) : '';
+    document.getElementById('stock20Section').style.display = 'block';
+  }catch(e){ /* file not there yet — keep section hidden */ }
+}
+fetchStock20();
+setInterval(fetchStock20, AUTO_REFRESH_MS);
 </script>
 
 </body>
