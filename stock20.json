@@ -1,0 +1,75 @@
+{
+ "updatedAt": "2026-08-10T10:22:48.842578+00:00",
+ "stocks": [
+  {
+   "symbol": "DCBBANK",
+   "name": "DCB Bank Limited",
+   "price": 187.43,
+   "dayPct": -2.69,
+   "m1Pct": -0.66,
+   "w52Low": 119.51,
+   "w52High": 205.9,
+   "mktCap": 60366970880.0,
+   "pe": 7.7,
+   "pb": 0.9,
+   "divYield": 0.75,
+   "trend": "Uptrend"
+  },
+  {
+   "symbol": "KPITTECH",
+   "name": "KPIT Technologies Limited",
+   "price": 627.9,
+   "dayPct": -0.32,
+   "m1Pct": 11.78,
+   "w52Low": 543.0,
+   "w52High": 1328.0,
+   "mktCap": 170931486720.0,
+   "pe": 29.5,
+   "pb": 4.8,
+   "divYield": 1.19,
+   "trend": "Downtrend"
+  },
+  {
+   "symbol": "AKUMS",
+   "name": "AKUMS DRUGS AND PHARMA L",
+   "price": 730.1,
+   "dayPct": 4.68,
+   "m1Pct": 4.01,
+   "w52Low": 409.3,
+   "w52High": 756.85,
+   "mktCap": 111779815424.0,
+   "pe": 43.8,
+   "pb": 3.4,
+   "divYield": 14.0,
+   "trend": "Uptrend"
+  },
+  {
+   "symbol": "TMB",
+   "name": "Tamilnad Mercantile Bank Limited",
+   "price": 890.2,
+   "dayPct": 1.63,
+   "m1Pct": 11.05,
+   "w52Low": 411.8,
+   "w52High": 917.0,
+   "mktCap": 140964462592.0,
+   "pe": 9.8,
+   "pb": 1.4,
+   "divYield": 1.43,
+   "trend": "Uptrend"
+  },
+  {
+   "symbol": "KTKBANK",
+   "name": "The Karnataka Bank Limited",
+   "price": 305.25,
+   "dayPct": -1.53,
+   "m1Pct": 10.46,
+   "w52Low": 169.12,
+   "w52High": 316.8,
+   "mktCap": 115439927296.0,
+   "pe": 8.0,
+   "pb": 0.9,
+   "divYield": 1.61,
+   "trend": "Uptrend"
+  }
+ ]
+}
