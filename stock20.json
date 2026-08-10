@@ -1,12 +1,12 @@
 {
- "updatedAt": "2026-08-10T10:22:48.842578+00:00",
+ "updatedAt": "2026-08-10T14:45:06.174992+00:00",
  "stocks": [
   {
    "symbol": "DCBBANK",
    "name": "DCB Bank Limited",
    "price": 187.43,
    "dayPct": -2.69,
-   "m1Pct": -0.66,
+   "m1Pct": 0.76,
    "w52Low": 119.51,
    "w52High": 205.9,
    "mktCap": 60366970880.0,
@@ -34,7 +34,7 @@
    "name": "AKUMS DRUGS AND PHARMA L",
    "price": 730.1,
    "dayPct": 4.68,
-   "m1Pct": 4.01,
+   "m1Pct": 10.92,
    "w52Low": 409.3,
    "w52High": 756.85,
    "mktCap": 111779815424.0,
@@ -48,7 +48,7 @@
    "name": "Tamilnad Mercantile Bank Limited",
    "price": 890.2,
    "dayPct": 1.63,
-   "m1Pct": 11.05,
+   "m1Pct": 15.73,
    "w52Low": 411.8,
    "w52High": 917.0,
    "mktCap": 140964462592.0,
@@ -68,7 +68,7 @@
    "mktCap": 115439927296.0,
    "pe": 8.0,
    "pb": 0.9,
-   "divYield": 1.61,
+   "divYield": null,
    "trend": "Uptrend"
   }
  ]
