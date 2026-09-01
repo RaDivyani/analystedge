@@ -178,10 +178,11 @@
 
 .cp-cell{font-family:var(--font-mono); font-weight:700; white-space:nowrap;}
 .cp-live{position:relative;}
-.cp-dot{display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--pos);
-        margin-right:6px; vertical-align:middle; animation:cpPulse 2s ease-in-out infinite;}
+.cp-dot{display:inline-block; width:10px; height:10px; border-radius:50%;
+        background:var(--pos-line); box-shadow:0 0 0 3px var(--pos-bg);
+        margin-right:9px; vertical-align:middle; animation:cpPulse 2s ease-in-out infinite;}
 .cp-stale .cp-dot{background:var(--ink-soft); animation:none;}
-@keyframes cpPulse{0%,100%{opacity:1;}50%{opacity:.25;}}
+@keyframes cpPulse{0%,100%{opacity:1;}50%{opacity:.45;}}
 @keyframes cpFlashUp{from{background:var(--pos-bg);}to{background:transparent;}}
 @keyframes cpFlashDn{from{background:var(--neg-bg);}to{background:transparent;}}
 .cp-up{animation:cpFlashUp 1.1s ease-out;}
