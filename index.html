@@ -1075,7 +1075,7 @@ function applyLivePrices(){
    ============================================================ */
 const LIVE_FAST_MS = 30 * 1000;      // during market hours
 const LIVE_SLOW_MS = 5 * 60 * 1000;  // when closed
-let liveTimer = null, prevPrices = {}, lastLiveAt = null, preferredSrc = {};
+let liveTimer = null, prevPrices = {}, lastLiveAt = null, preferredSrc = {}, liveSource = null;
 
 function istNow(){
   return new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
@@ -1132,8 +1132,9 @@ function setLiveStatus(){
   const el = document.getElementById('liveStatus');
   if(!el) return;
   if(!lastLiveAt){ el.textContent = ''; return; }
-  const t = lastLiveAt.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-  el.innerHTML = (marketOpen() ? '<span class="cp-dot"></span>Live · ' : 'Last close · ') + t;
+  const t = lastLiveAt.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+  const label = marketOpen() ? (liveSource === 'direct' ? 'Live' : 'Live (5-min)') : 'Last close';
+  el.innerHTML = (marketOpen() ? '<span class="cp-dot"></span>' : '') + label + ' · ' + t;
 }
 
 function flashChanges(){
@@ -1147,15 +1148,38 @@ function flashChanges(){
   });
 }
 
+/* Primary feed: live.json, written every 5 minutes by our own GitHub robot.
+   Same-origin, so it always loads — no CORS, no proxy, no API key. */
+async function fetchLiveJson(){
+  try{
+    const res = await fetch('live.json?v=' + Date.now(), { cache: 'no-store' });
+    if(!res.ok) return null;
+    const d = await res.json();
+    if(!d || !d.quotes) return null;
+    let any = false;
+    Object.keys(d.quotes).forEach(k => {
+      const p = d.quotes[k] && d.quotes[k].price;
+      if(typeof p === 'number'){ livePrices[symKey(k)] = p; any = true; }
+    });
+    return any ? d : null;
+  }catch(e){ return null; }
+}
+
 async function refreshLivePrices(){
   const syms = liveSymbols();
   if(!syms.length) return;
   prevPrices = Object.assign({}, livePrices);
-  const out = await Promise.all(syms.map(async s => ({ s, p: await fetchLiveQuote(s) })));
   let any = false;
-  out.forEach(r => { if(r.p != null){ livePrices[r.s] = r.p; any = true; } });
+
+  const robot = await fetchLiveJson();
+  if(robot){ any = true; liveSource = 'robot'; lastLiveAt = robot.updatedAt ? new Date(robot.updatedAt) : new Date(); }
+
+  // Bonus layer: if the browser can reach Yahoo directly, use the fresher tick.
+  const out = await Promise.all(syms.map(async s => ({ s, p: await fetchLiveQuote(s) })));
+  out.forEach(r => { if(r.p != null){ livePrices[r.s] = r.p; any = true; liveSource = 'direct'; } });
+  if(liveSource === 'direct') lastLiveAt = new Date();
+
   if(!any) return;
-  lastLiveAt = new Date();
   applyLivePrices();
   renderPerfChart();
   renderTable();
