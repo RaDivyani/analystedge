@@ -126,6 +126,16 @@ def main():
         data = json.load(f)
 
     symbols = data.get("stock20") or []
+
+    # Sector labels come from our own picks so the client table can show them.
+    sectors = {}
+    for picks in (data.get("data") or {}).values():
+        for s in picks or []:
+            for key in (s.get("name"), s.get("ticker")):
+                k = "".join(ch for ch in str(key or "").upper() if ch.isalnum())
+                sec = s.get("sector")
+                if k and sec and sec != "General":
+                    sectors.setdefault(k, sec)
     if not symbols:
         print("stock20 list is empty in data.json — nothing to do.")
         # still write an empty file so the client hides the section cleanly
@@ -139,6 +149,9 @@ def main():
         sym = clean_symbol(raw)
         try:
             row = fetch_one(sym)
+            key = "".join(ch for ch in row["symbol"].upper() if ch.isalnum())
+            if sectors.get(key):
+                row["sector"] = sectors[key]
             stocks.append(row)
             print(f"OK  {sym}: {row['price']}")
         except Exception as e:
