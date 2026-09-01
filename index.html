@@ -474,7 +474,7 @@ function renderActionPlan(month){
   const row = s => `<div class="action-row"><span><span class="a-name">${escHtml(s.name)}</span><span class="a-ticker">${escHtml(s.ticker)}</span></span><span>₹${s.priceAdded}</span></div>`;
   box.innerHTML = `
     <div class="action-col">
-      <div class="action-col-head" style="color:var(--pos)"><span class="dot" style="background:var(--pos)"></span>To Buy / Added (${toAdd.length})</div>
+      <div class="action-col-head" style="color:var(--pos)"><span class="dot" style="background:var(--pos)"></span>Current Open Stocks — To Buy / Added (${toAdd.length})</div>
       ${toAdd.length ? toAdd.map(row).join('') : '<div class="action-empty">No new picks added this month.</div>'}
     </div>
     <div class="action-col">
