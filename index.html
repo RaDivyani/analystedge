@@ -700,7 +700,7 @@ function loadFromLibrary(ticker){
 const MONTH_ABBR = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
 function monthSortKey(m){
   const parts = String(m).trim().split(/\s+/);
-  const idx = MONTH_ABBR[parts[0]];
+  const idx = MONTH_ABBR[String(parts[0]).slice(0,3).replace(/^./, c => c.toUpperCase()).replace(/(.)(.*)/, (_,a,b) => a + b.toLowerCase())];
   const year = parseInt(parts[1],10) || 0;
   return year*12 + (idx==null?0:idx);
 }
