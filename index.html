@@ -728,16 +728,26 @@ function loadMonths(){
   saveMonths();
 }
 
+/* Which month should open by default: today's month if we publish it,
+   otherwise the most recent one on the list. */
+function defaultMonth(){
+  if(!allMonths.length) return '';
+  const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+  const key = now.getFullYear() * 12 + now.getMonth();
+  const thisMonth = allMonths.find(m => monthSortKey(m) === key);
+  return thisMonth || allMonths[allMonths.length - 1];
+}
+
 function populateMonthSelects(){
   const monthSel = document.getElementById('monthSelect');
   const admSel = document.getElementById('admMonth');
   const prevMain = monthSel.value, prevAdm = admSel ? admSel.value : null;
   const optsHtml = allMonths.map(m=>`<option value="${escAttr(m)}">${escHtml(m)}</option>`).join('');
   monthSel.innerHTML = optsHtml;
-  monthSel.value = allMonths.includes(prevMain) ? prevMain : allMonths[allMonths.length-1];
+  monthSel.value = allMonths.includes(prevMain) ? prevMain : defaultMonth();
   if(admSel){
     admSel.innerHTML = optsHtml;
-    admSel.value = allMonths.includes(prevAdm) ? prevAdm : allMonths[allMonths.length-1];
+    admSel.value = allMonths.includes(prevAdm) ? prevAdm : defaultMonth();
   }
 }
 
