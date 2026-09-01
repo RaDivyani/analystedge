@@ -308,7 +308,7 @@
           <table style="border:none; border-radius:0; min-width:980px;">
             <thead>
               <tr>
-                <th>Name</th><th>Price</th><th>Day %</th><th>1M %</th>
+                <th>Name</th><th>Sector</th><th>Price</th><th>Day %</th><th>1M %</th>
                 <th>52W Range</th><th>Mkt Cap</th><th>P/E</th><th>P/B</th>
                 <th>Div Yld</th><th>Trend</th>
               </tr>
@@ -1196,6 +1196,20 @@ function startLivePolling(){
   tick();
 }
 
+/* Sector label: prefer whatever the robot wrote, else look the symbol up
+   in our own picks so the column fills in even before the next robot run. */
+function sectorFor(s){
+  if(s.sector) return s.sector;
+  const k = symKey(s.symbol);
+  let found = null;
+  Object.keys(monthsData).forEach(m => {
+    (monthsData[m] || []).forEach(p => {
+      if(!found && (symKey(p.name) === k || symKey(p.ticker) === k)) found = p.sector;
+    });
+  });
+  return (found && found !== 'General') ? found : '—';
+}
+
 async function fetchStock20(){
   try{
     const res = await fetch('stock20.json?v=' + Date.now(), { cache: 'no-store' });
@@ -1209,6 +1223,7 @@ async function fetchStock20(){
     body.innerHTML = d.stocks.map(s =>
       '<tr style="cursor:default;">' +
         '<td><div style="font-weight:700;">' + (s.name || s.symbol) + '</div><div style="font-size:13px; color:var(--ink-soft); font-family:var(--font-mono);">' + s.symbol + '</div></td>' +
+        '<td style="font-size:14px; color:var(--ink-soft); min-width:130px;">' + sectorFor(s) + '</td>' +
         '<td style="font-family:var(--font-mono); font-weight:700; white-space:nowrap;">' + (s.price != null ? '₹' + s.price.toLocaleString('en-IN') : '—') + '</td>' +
         pctCell(s.dayPct) +
         pctCell(s.m1Pct) +
