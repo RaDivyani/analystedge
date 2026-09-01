@@ -1014,7 +1014,10 @@ async function fetchRemoteData(manual){
       renderPerfChart();
       renderTable();
       const t = remote.updatedAt ? new Date(remote.updatedAt) : new Date();
-      setSyncStatus('Updated ' + t.toLocaleDateString('en-IN',{day:'numeric',month:'short'}) + ', ' + t.toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'}), true);
+      const c = new Date();
+      setSyncStatus('Picks updated ' + t.toLocaleDateString('en-IN',{day:'numeric',month:'short'}) + ', '
+        + t.toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'})
+        + ' · checked ' + c.toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit',second:'2-digit'}), true);
     }
   }catch(e){
     setSyncStatus(manual ? 'Could not reach server — showing last saved data' : 'Offline — showing last saved data', false);
