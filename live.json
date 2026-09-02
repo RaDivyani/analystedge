@@ -1,46 +1,31 @@
 {
- "updatedAt": "2026-09-01T10:57:48.784567+00:00",
- "updatedIST": "01 Sep 2026, 04:27:48 PM",
+ "updatedAt": "2026-09-02T03:02:34.354857+00:00",
+ "updatedIST": "02 Sep 2026, 08:32:34 AM",
  "quotes": {
-  "AKUMS": {
-   "price": 779.05,
-   "prevClose": 776.7,
-   "dayPct": 0.3
-  },
-  "KTKBANK": {
-   "price": 330.9,
-   "prevClose": 336.0,
-   "dayPct": -1.52
-  },
   "DCBBANK": {
    "price": 224.39,
    "prevClose": 218.0,
    "dayPct": 2.93
-  },
-  "JAYNECOIND": {
-   "price": 96.88,
-   "prevClose": 98.41,
-   "dayPct": -1.55
-  },
-  "TMB": {
-   "price": 908.1,
-   "prevClose": 932.6,
-   "dayPct": -2.63
-  },
-  "IIFLCAPS": {
-   "price": 340.15,
-   "prevClose": 336.95,
-   "dayPct": 0.95
   },
   "KPITTECH": {
    "price": 590.0,
    "prevClose": 585.0,
    "dayPct": 0.85
   },
-  "SBIN": {
-   "price": 1034.5,
-   "prevClose": 1060.0,
-   "dayPct": -2.41
+  "AKUMS": {
+   "price": 779.05,
+   "prevClose": 776.7,
+   "dayPct": 0.3
+  },
+  "TMB": {
+   "price": 908.1,
+   "prevClose": 932.6,
+   "dayPct": -2.63
+  },
+  "KTKBANK": {
+   "price": 330.9,
+   "prevClose": 336.0,
+   "dayPct": -1.52
   }
  }
 }
