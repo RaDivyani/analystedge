@@ -1,9 +1,9 @@
 {
- "updatedAt": "2026-09-02T09:48:33.017223+00:00",
- "updatedIST": "02 Sep 2026, 03:18:33 PM",
+ "updatedAt": "2026-09-02T09:56:11.480834+00:00",
+ "updatedIST": "02 Sep 2026, 03:26:11 PM",
  "quotes": {
   "DCBBANK": {
-   "price": 222.88,
+   "price": 222.89,
    "prevClose": 224.25,
    "dayPct": -0.61
   },
@@ -13,19 +13,19 @@
    "dayPct": -0.51
   },
   "AKUMS": {
-   "price": 770.0,
+   "price": 771.1,
    "prevClose": 782.0,
-   "dayPct": -1.53
+   "dayPct": -1.39
   },
   "TMB": {
-   "price": 904.5,
+   "price": 906.2,
    "prevClose": 913.0,
-   "dayPct": -0.93
+   "dayPct": -0.74
   },
   "KTKBANK": {
-   "price": 331.05,
+   "price": 330.4,
    "prevClose": 330.9,
-   "dayPct": 0.05
+   "dayPct": -0.15
   }
  }
 }
