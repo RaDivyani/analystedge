@@ -1,0 +1,2873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AnalystEdge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F3F6F4; --surface:#FFFFFF; --surface-2:#F2F5F2;
+    --ink:#0A140E; --ink-soft:#33453A;
+    --primary:#1B4332; --accent:#52B788;
+    --buy:#2D6A4F; --buy-bg:#E6F3EB;
+    --remove:#A5443E; --remove-bg:#FBEBEA;
+    --hold:#8A6D1E; --hold-bg:#FBF3DF;
+    --report-bg:#FDF6DF; --report-br:#EBD79A; --report-ac:#9A7B10; --report-tx:#5E4B08;
+    --pos:#178A44; --pos-bg:#DBF3E4; --pos-line:#15803D; --dot-live:#0A6B2F;
+    --neg:#D8352F; --neg-bg:#FCE3E1; --neg-line:#DC2626;
+    --booked:#1E7FC0; --booked-bg:#E4F2FB;
+    --border:#E3E8E4;
+    --shadow: 0 2px 4px rgba(20,35,27,0.05), 0 10px 28px rgba(20,35,27,0.08);
+    --font-display:'Fraunces', serif; --font-body:'Inter', sans-serif; --font-mono:'IBM Plex Mono', monospace;
+  }
+  [data-theme="dark"]{
+    --bg:#0D1710; --surface:#142A1E; --surface-2:#193324;
+    --ink:#FFFFFF; --ink-soft:#C9DBCF;
+    --primary:#74C69D; --accent:#52B788;
+    --buy:#7FCDA0; --buy-bg:#1B3A28;
+    --report-bg:#3A3212; --report-br:#6E5F22; --report-ac:#E9C949; --report-tx:#F3E4A8;
+    --remove:#E38C86; --remove-bg:#3A2220;
+    --hold:#E3C775; --hold-bg:#3A3220;
+    --pos:#3DDC7A; --pos-bg:#123A24; --pos-line:#4ADE80; --dot-live:#22C55E;
+    --neg:#FF6B62; --neg-bg:#3D1917; --neg-line:#F87171;
+    --booked:#7FC4F0; --booked-bg:#173447;
+    --border:#24402F;
+    --shadow: 0 1px 2px rgba(0,0,0,0.2), 0 8px 24px rgba(0,0,0,0.3);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font-body); font-weight:600; display:flex; transition:background .3s,color .3s;}
+
+  aside{width:212px; flex-shrink:0; background:var(--surface); border-right:1px solid var(--border); padding:22px 14px; display:flex; flex-direction:column; gap:24px;}
+  .back-to-landing{display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--ink-soft); cursor:pointer; padding:4px 2px; margin-bottom:10px; width:fit-content;}
+  .back-to-landing svg{width:13px; height:13px;}
+  .back-to-landing:hover{color:var(--ink);}
+  .logo-chip{display:flex; align-items:center; gap:8px; background:#0F231A; border-radius:10px; padding:10px 12px; width:fit-content;}
+  .logo-text{font-family:var(--font-display); font-size:20px; font-weight:700; letter-spacing:-0.01em; white-space:nowrap;}
+  .logo-text .analyst{color:#fff;} .logo-text .edge{color:#5CD68C;}
+  .logo-icon{width:14px; height:14px; flex-shrink:0;}
+  nav{display:flex; flex-direction:column; gap:2px;}
+  .nav-item{display:flex; align-items:center; gap:10px; padding:9px 11px; border-radius:8px; font-size:17px; color:var(--ink-soft); cursor:pointer;}
+  .nav-item svg{width:15px; height:15px; stroke:currentColor; flex-shrink:0;}
+  .nav-item:hover{background:var(--surface-2); color:var(--ink);}
+  .nav-item.active{background:var(--buy-bg); color:var(--buy); font-weight:700;}
+  .sidebar-foot{margin-top:auto; font-size:13.5px; color:var(--ink-soft); font-family:var(--font-mono); line-height:1.6; padding:0 4px;}
+
+  .main-wrap{flex:1; display:flex; flex-direction:column; min-width:0;}
+  header{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 28px; border-bottom:1px solid var(--border); background:var(--surface);}
+  .search-wrap{flex:1; max-width:380px; display:flex; align-items:center; gap:8px; background:var(--surface-2); border:1px solid var(--border); border-radius:9px; padding:8px 12px;}
+  .search-wrap input{border:none; background:transparent; outline:none; font-size:17px; color:var(--ink); width:100%; font-family:var(--font-body);}
+  .search-wrap svg{width:15px; height:15px; stroke:var(--ink-soft); flex-shrink:0; cursor:pointer;}
+  .month-picker{display:flex; align-items:center; gap:9px;}
+  .month-picker-label{font-family:var(--font-mono); font-size:12.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em;}
+  select#monthSelect{
+    font-family:var(--font-mono); font-size:19px; font-weight:700; color:var(--buy);
+    background:var(--buy-bg); border:2px solid var(--buy); border-radius:10px;
+    padding:9px 16px; cursor:pointer; letter-spacing:.02em;
+    box-shadow:0 1px 4px rgba(0,0,0,.08);
+  }
+  select#monthSelect:hover{filter:brightness(1.04);}
+  select#monthSelect:focus{outline:2px solid var(--buy); outline-offset:2px;}
+  /* Gradient line ko text ke turant baad rakho, taaki month picker
+     bilkul daayein kinare — ACTION column ke upar — chala jaye. */
+  #tableLabel::after{order:1;}
+  #tableLabel .label-right{order:2; display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
+  .header-right{display:flex; align-items:center; gap:14px;}
+  .toggle{display:flex; align-items:center; background:var(--surface-2); border:1px solid var(--border); border-radius:100px; padding:3px; cursor:pointer; width:52px; height:26px; position:relative;}
+  .toggle-knob{width:20px; height:20px; border-radius:50%; background:var(--primary); transition:transform .25s; display:flex; align-items:center; justify-content:center;}
+  .toggle-knob svg{width:11px; height:11px; stroke:var(--surface);}
+  [data-theme="dark"] .toggle-knob{transform:translateX(26px);}
+
+  main{width:100%; max-width:1240px; margin:0 auto; padding:28px 36px 40px; overflow-y:auto;}
+  .page-title{font-family:var(--font-display); font-size:32px; font-weight:700; margin-bottom:3px; border-left:5px solid var(--buy); padding-left:14px;}
+  .page-sub{color:var(--ink-soft); font-size:17.5px; margin-bottom:12px;}
+  .reg-chip{font-family:var(--font-mono); font-size:13.5px; color:var(--ink-soft); background:var(--surface-2); padding:5px 10px; border-radius:100px; border:1px solid var(--border); display:inline-block; margin-bottom:22px;}
+
+  .stat-row{display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap;}
+  .stat{flex:1; min-width:130px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px 16px;}
+  .stat-label{font-size:13.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px;}
+  .stat-value{font-family:var(--font-mono); font-size:23px; font-weight:700; color:var(--pos);}
+
+  .chart-card{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:26px; box-shadow:var(--shadow);}
+  .chart-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .chart-title{font-family:var(--font-display); font-size:20px; font-weight:700; border-left:4px solid var(--buy); padding-left:10px;}
+  .legend{display:flex; gap:16px; font-size:14.5px; color:var(--ink-soft);}
+  .legend span{display:flex; align-items:center; gap:6px;}
+  .legend i{width:14px; height:2.5px; border-radius:2px; display:inline-block;}
+  .chart-note{font-size:13.5px; color:var(--ink-soft); margin-top:8px;}
+
+  #reportBar{
+    display:flex; align-items:center; gap:12px; text-decoration:none;
+    background:var(--report-bg); border:1px solid var(--report-br); border-left:4px solid var(--report-ac);
+    border-radius:10px; padding:12px 16px; margin:0 0 14px; cursor:pointer;
+    transition:filter .15s, transform .12s;
+  }
+  #reportBar:hover{filter:brightness(1.04); transform:translateY(-1px);}
+  #reportBar.rb-empty{background:transparent; border:1px dashed var(--border); border-left:4px dashed var(--report-ac);}
+  #reportBar.rb-empty .rb-txt{color:var(--ink-soft); font-weight:600;}
+  #reportBar .rb-ico{font-size:17px; line-height:1;}
+  #reportBar .rb-txt{flex:1; font-size:15.5px; font-weight:700; color:var(--report-tx);}
+  #reportBar .rb-open{font-family:var(--font-mono); font-size:13px; color:var(--report-ac); border:1px solid var(--report-ac); border-radius:100px; padding:3px 12px;}
+  .section-label{display:flex; align-items:center; gap:10px; font-size:14.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.08em; margin-bottom:12px; border-left:3px solid var(--buy); padding-left:9px;}
+  .section-label::after{content:''; flex:1; height:2px; background:linear-gradient(to right, var(--buy), transparent);}
+
+  table{width:100%; border-collapse:collapse; background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden;}
+  thead th{text-align:left; font-size:13.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); padding:12px 16px; border-bottom:2px solid var(--buy); background:var(--surface-2);}
+  tbody td{padding:13px 16px; font-size:17px; border-bottom:1px solid var(--border); vertical-align:top;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr{cursor:pointer; transition:background .12s;}
+  tbody tr:hover{background:var(--surface-2);}
+  .row-name{font-weight:700;}
+  .row-ticker{font-family:var(--font-mono); font-size:13.5px; color:var(--ink-soft); margin-top:2px;}
+  .row-rationale{color:var(--ink-soft); font-size:15px; max-width:260px; line-height:1.4;}
+  .research-btn{font-family:var(--font-body); font-size:14.5px; font-weight:700; color:var(--primary); background:var(--buy-bg); border:1px solid var(--buy); padding:6px 13px; border-radius:100px; cursor:pointer;}
+  .research-btn:hover{opacity:.85;}
+  .research-btn-empty{color:var(--ink-soft); background:var(--surface-2); border:1px solid var(--border); cursor:not-allowed;}
+  .pct-pos{color:var(--pos); background:var(--pos-bg); font-family:var(--font-mono); font-weight:700; font-size:17.5px; padding:3px 9px; border-radius:6px; display:inline-block;}
+  .pct-neg{color:var(--neg); background:var(--neg-bg); font-family:var(--font-mono); font-weight:700; font-size:17.5px; padding:3px 9px; border-radius:6px; display:inline-block;}
+  .action-tag{font-family:var(--font-mono); font-size:14px; font-weight:700; padding:5px 12px; border-radius:100px; letter-spacing:.02em;}
+  .tag-added{color:var(--pos); background:var(--pos-bg); box-shadow:inset 0 0 0 1px var(--pos);}
+  .tag-removed{color:var(--booked); background:var(--booked-bg); box-shadow:inset 0 0 0 1px var(--booked);}
+
+  /* Detail view */
+  #detail-view{display:none;}
+  .back-btn{display:inline-flex; align-items:center; gap:6px; font-size:16.5px; color:var(--ink-soft); cursor:pointer; margin-bottom:16px;}
+  .back-btn svg{width:14px; height:14px; stroke:currentColor;}
+  .detail-head{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;}
+  .detail-name{font-family:var(--font-display); font-size:31px; font-weight:700;}
+  .detail-sub{font-family:var(--font-mono); font-size:15px; color:var(--ink-soft); margin-top:3px;}
+  .detail-price{font-family:var(--font-mono); font-size:28px; font-weight:700; text-align:right;}
+  .detail-change{font-family:var(--font-mono); font-size:17px; text-align:right; margin-top:2px;}
+
+  .indicator-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden; margin:20px 0;}
+  .indicator{background:var(--surface); padding:12px 14px;}
+  .indicator-label{font-size:13px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; margin-bottom:5px;}
+  .indicator-value{font-family:var(--font-mono); font-size:18px; font-weight:700;}
+
+  .summary-box{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:20px; box-shadow:var(--shadow);}
+  .summary-box h4{font-family:var(--font-display); font-size:18px; font-weight:700; margin-bottom:10px; border-left:4px solid var(--buy); padding-left:10px;}
+  h4{border-left:3px solid var(--buy); padding-left:9px;}
+  .summary-box p{font-size:17px; line-height:1.6; color:var(--ink);}
+
+  .two-col{display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap;}
+  .fair-value-box{flex:1; min-width:180px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px;}
+  .fv-label{font-size:14px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; margin-bottom:8px;}
+  .fv-upside{font-family:var(--font-mono); font-size:33px; font-weight:700; color:var(--pos);}
+  .fv-price{font-size:16.5px; color:var(--ink-soft); margin-top:4px;}
+
+  .health-box{flex:1.4; min-width:220px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px;}
+  .health-row{margin-bottom:12px;}
+  .health-row:last-child{margin-bottom:0;}
+  .health-top{display:flex; justify-content:space-between; font-size:15px; margin-bottom:5px;}
+  .health-top b{font-family:var(--font-mono);}
+  .health-bar{height:6px; background:var(--surface-2); border-radius:4px; overflow:hidden;}
+  .health-fill{height:100%; background:var(--pos); border-radius:4px;}
+
+    .action-col{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; box-shadow:var(--shadow);}
+  .action-col-head{display:flex; align-items:center; gap:8px; font-size:14.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; margin-bottom:12px;}
+  .action-col-head .dot{width:9px; height:9px; border-radius:50%; flex-shrink:0;}
+  .action-row{display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid var(--border); font-size:16px;}
+  .action-row:last-child{border-bottom:none;}
+  .action-row .a-name{font-weight:700;}
+  .action-row .a-ticker{font-family:var(--font-mono); font-size:13px; color:var(--ink-soft); margin-left:6px;}
+  .action-empty{color:var(--ink-soft); font-size:15.5px; padding:6px 0;}
+
+  .disclaimer{margin-top:52px; border-top:1px solid var(--border); padding:20px 0 4px; font-size:13.5px; color:var(--ink-soft); line-height:1.55; text-align:center;}
+  .disclaimer b{color:var(--ink);}
+
+  #app-shell{display:none; width:100%;}
+
+  #landing-page{
+    position:fixed; inset:0; z-index:3000; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(circle at 20% 20%, #1B4332 0%, #0D1710 55%, #081008 100%);
+    text-align:center; padding:24px; overflow-y:auto;
+  }
+  .landing-inner{max-width:560px; display:flex; flex-direction:column; align-items:center;}
+  .landing-logo{display:flex; align-items:center; gap:10px; margin-bottom:28px;}
+  .landing-logo svg{width:30px; height:30px;}
+  .landing-logo-text{font-family:var(--font-display); font-size:26px; font-weight:600; letter-spacing:-0.01em; color:#fff;}
+  .landing-logo-text .edge{color:#5CD68C;}
+  .landing-tagline{font-family:var(--font-mono); font-size:14px; letter-spacing:.12em; text-transform:uppercase; color:#7FCDA0; margin-bottom:18px;}
+  .landing-title{font-family:var(--font-display); font-size:38px; font-weight:700; line-height:1.25; color:#fff; margin-bottom:18px;}
+  .landing-sub{font-size:16.5px; line-height:1.6; color:#B9CCC0; margin-bottom:34px; max-width:440px;}
+  .landing-cta{font-family:var(--font-body); font-size:17px; font-weight:700; color:#0D1710; background:#5CD68C; border:none; padding:14px 30px; border-radius:100px; cursor:pointer; transition:transform .15s, opacity .15s;}
+  .landing-cta:hover{opacity:.9; transform:translateY(-1px);}
+  .landing-reg{font-family:var(--font-mono); font-size:12.5px; letter-spacing:.05em; color:#5B7A68; margin-top:26px;}
+  .landing-disclaimer{max-width:520px; font-size:12px; line-height:1.6; color:#5B7A68; margin-top:22px; padding-top:22px; border-top:1px solid rgba(255,255,255,0.08);}
+  .landing-disclaimer b{color:#8FA99A;}
+
+#lockBtn{
+  position:fixed; right:20px; bottom:20px; z-index:3500;
+  width:46px; height:46px; padding:0; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--surface); border:1px solid var(--border);
+  box-shadow:var(--shadow); cursor:pointer; opacity:.5;
+  transition:opacity .2s, transform .15s, border-color .2s;
+}
+#lockBtn:hover{opacity:1; transform:translateY(-2px);}
+#lockBtn svg{width:20px; height:20px; stroke:var(--ink-soft); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
+#lockBtn.unlocked{opacity:1; border-color:var(--buy); background:var(--buy-bg);}
+#lockBtn.unlocked svg{stroke:var(--buy);}
+.cp-cell{font-family:var(--font-mono); font-weight:700; white-space:nowrap;}
+.cp-live{position:relative;}
+.cp-dot{display:inline-block; width:14px; height:14px; border-radius:50%;
+        background:var(--dot-live); box-shadow:0 0 0 4px var(--pos-bg);
+        margin-right:11px; vertical-align:middle; animation:cpPulse 2s ease-in-out infinite;}
+.cp-stale .cp-dot{background:var(--ink-soft); animation:none;}
+@keyframes cpPulse{0%,100%{opacity:1;}50%{opacity:.6;}}
+@keyframes cpFlashUp{from{background:var(--pos-bg);}to{background:transparent;}}
+@keyframes cpFlashDn{from{background:var(--neg-bg);}to{background:transparent;}}
+.cp-up{animation:cpFlashUp 1.1s ease-out;}
+.cp-dn{animation:cpFlashDn 1.1s ease-out;}
+</style>
+</head>
+<body data-theme="light">
+
+<div id="landing-page">
+  <div class="landing-inner">
+    <div class="landing-logo">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 17L10 11L14 15L20 6" stroke="#5CD68C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M14 6H20V12" stroke="#5CD68C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="landing-logo-text"><span>Analyst</span><span class="edge">Edge</span></div>
+    </div>
+    <div class="landing-tagline">SEBI Registered Research Analyst</div>
+    <div class="landing-title">Nifty &amp; Mid-Cap Research</div>
+    <div class="landing-sub">Data-driven stock picks, technical levels &amp; fair-value analysis — built to help you make informed investment decisions.</div>
+    <button class="landing-cta" onclick="enterDashboard()">Enter Dashboard →</button>
+    <div class="landing-reg">SEBI RA · INH000021252</div>
+    <div class="landing-disclaimer">
+      <b>RA Divyani Thakur</b> is a SEBI Registered Research Analyst (Reg. No. INH000021252). This is for informational/educational purposes only and does not constitute personalised investment advice. Investments in securities market are subject to market risks. Please consult your own financial advisor before investing.
+    </div>
+  </div>
+</div>
+
+<div id="app-shell">
+<aside>
+  <div class="back-to-landing" onclick="backToLanding()" title="Back to landing page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18L9 12L15 6"/></svg>
+    Home
+  </div>
+  <div class="logo-chip">
+    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 17L10 11L14 15L20 6" stroke="#5CD68C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M14 6H20V12" stroke="#5CD68C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div class="logo-text"><span class="analyst">Analyst</span><span class="edge">Edge</span></div>
+  </div>
+  <nav>
+    <div class="nav-item active" id="navDashboard" onclick="showOverview()">
+      <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item" id="navOpenPos" onclick="showOpenPositions()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 3.5"/></svg>
+      Open Positions
+    </div>
+  </nav>
+  <div class="sidebar-foot">SEBI RA<br>INH000021252</div>
+</aside>
+
+<div class="main-wrap">
+  <header>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" onclick="applySearch()"><circle cx="11" cy="11" r="7"/><path d="M21 21L16.65 16.65"/></svg>
+      <input id="searchInput" placeholder="Search stock name or ticker..." oninput="applySearch()">
+    </div>
+    <div class="header-right">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button id="refreshBtn" onclick="fetchRemoteData(true)" title="Get latest picks" style="display:flex; align-items:center; gap:6px; background:var(--buy-bg); border:1px solid var(--buy); color:var(--buy); padding:7px 14px; border-radius:100px; font-family:var(--font-body); font-weight:700; font-size:15px; cursor:pointer;">
+          <svg id="refreshIcon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+          Refresh
+        </button>
+        <span id="syncStatus" style="font-size:13.5px; color:var(--ink-soft); white-space:nowrap;"></span>
+      </div>
+      <div class="toggle" onclick="toggleTheme()">
+        <div class="toggle-knob">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- OVERVIEW -->
+    <div id="overview-view">
+      <div class="page-title">Mid-Cap Research Overview</div>
+      <div class="page-sub">Monthly stock recommendations · Reviewed on the 1st of every month</div>
+      <div class="reg-chip">Research by RA Divyani Thakur — Reg. No. INH000021252</div>
+
+      <div class="stat-row">
+        <div class="stat"><div class="stat-label">Total Return (5Y)</div><div class="stat-value" style="color:var(--pos)">+540.2%</div></div>
+        <div class="stat"><div class="stat-label">Outperformance</div><div class="stat-value" style="color:var(--pos)">+250.4%</div></div>
+        <div class="stat"><div class="stat-label">Annualized Return</div><div class="stat-value">+32.1%</div></div>
+        <div class="stat"><div class="stat-label">Sharpe Ratio</div><div class="stat-value">1.48</div></div>
+        <div class="stat"><div class="stat-label">Risk Rating</div><div class="stat-value" style="color:var(--hold)">Moderate</div></div>
+        <div class="stat"><div class="stat-label">Open Positions</div><div class="stat-value" id="openPosCount" style="color:var(--pos)">0</div></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-title">Performance vs Benchmark</div>
+          <div class="legend">
+            <span><i style="background:var(--pos-line)"></i>AnalystEdge Picks</span>
+            <span><i style="background:var(--ink-soft); opacity:.5"></i>Nifty Midcap 100</span>
+          </div>
+        </div>
+        <div id="perfChart"></div>
+        <div class="chart-note">Backtested / indicative performance. Past performance does not guarantee future results.</div>
+      </div>
+
+      <div class="section-label" id="tableLabel" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+        <span id="tableLabelText">Monthly Picks</span>
+        <span class="label-right">
+          <span id="liveStatus" style="font-size:13px; text-transform:none; letter-spacing:0; color:var(--ink-soft); font-weight:600;"></span>
+          <span class="month-picker">
+            <label for="monthSelect" class="month-picker-label">Month</label>
+            <select id="monthSelect" onchange="rememberMonth(this.value); renderTable()"></select>
+          </span>
+        </span>
+      </div>
+
+      <!-- Month-level research report bar -->
+      <a id="reportBar" href="#" onclick="openMonthReport(event)" style="display:none;">
+        <span class="rb-ico">📄</span>
+        <span class="rb-txt"></span>
+        <span class="rb-open">Open</span>
+      </a>
+      <table>
+        <thead>
+          <tr><th>Name</th><th>Buy Price</th><th>Current Price</th><th>Return</th><th>Status — kya hua, kis din</th></tr>
+        </thead>
+        <tbody id="picksBody"></tbody>
+      </table>
+
+      <div id="stock20Section" style="display:none;">
+        <div class="section-label" style="margin-top:34px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+          <span>Stock20 — Mid-Cap Movers Watchlist</span>
+          <span id="stock20Updated" style="font-size:13px; text-transform:none; letter-spacing:0; color:var(--ink-soft); font-weight:600;"></span>
+        </div>
+        <div style="overflow-x:auto; border:1px solid var(--border); border-radius:14px; background:var(--surface);">
+          <table style="border:none; border-radius:0; min-width:980px;">
+            <thead>
+              <tr>
+                <th>Name</th><th>Sector</th><th>Price</th><th>Day %</th><th>1M %</th>
+                <th>52W Range</th><th>Mkt Cap</th><th>P/E</th><th>P/B</th>
+                <th>Div Yld</th><th>Trend</th>
+              </tr>
+            </thead>
+            <tbody id="stock20Body"></tbody>
+          </table>
+        </div>
+        <div class="chart-note" style="margin-top:8px;">Data auto-updated daily after market close (source: exchange data via Yahoo Finance). For information/education only — not personalised investment advice.</div>
+      </div>
+    </div>
+
+    <!-- OPEN POSITIONS -->
+    <div id="openpos-view" style="display:none;">
+      <div class="page-title">Open Positions</div>
+      <div class="page-sub">All currently open recommendations (not yet booked/exited), across every month</div>
+      <div class="reg-chip">Research by RA Divyani Thakur — Reg. No. INH000021252</div>
+
+      <table>
+        <thead>
+          <tr><th>Name</th><th>Month</th><th>Recommended Date</th><th>Buy Price</th><th>Current Price</th><th>Return</th></tr>
+        </thead>
+        <tbody id="openPosBody"></tbody>
+      </table>
+    </div>
+
+    <!-- ADMIN (locked) -->
+    <div id="admin-view" style="display:none;">
+      <div class="back-btn" onclick="showOverview()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18L9 12L15 6"/></svg>
+        Back to Overview
+      </div>
+      <div class="page-title">Add New Pick</div>
+      <div class="page-sub">Password-protected. Clients ko yeh panel dikhta hi nahi — wahi ek link sabke liye kaafi hai.</div>
+
+      <!-- Connection strip: sirf status. Koi manual push/pull button nahi. -->
+      <div id="connStrip" style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:14px 0 4px; padding:11px 16px; border-radius:12px; border:1px solid var(--border); background:var(--surface-2);">
+        <span id="connDot" style="width:11px; height:11px; border-radius:50%; background:var(--ink-soft); flex-shrink:0;"></span>
+        <span id="connText" style="font-size:15.5px; font-weight:700; color:var(--ink-soft);">Checking…</span>
+        <span style="flex:1;"></span>
+        <button onclick="changePassword()" style="background:none; border:none; color:var(--ink-soft); font-family:var(--font-body); font-size:14px; text-decoration:underline; cursor:pointer; padding:0;">Password badlo</button>
+        <button onclick="lockAdmin()" style="background:none; border:none; color:var(--ink-soft); font-family:var(--font-body); font-size:14px; text-decoration:underline; cursor:pointer; padding:0;">Lock</button>
+        <button onclick="downloadDataJsonBackup()" style="background:none; border:none; color:var(--ink-soft); font-family:var(--font-body); font-size:14px; text-decoration:underline; cursor:pointer; padding:0;">Backup</button>
+        <span id="publishStatus" style="font-size:14px; color:var(--pos); font-weight:700;"></span>
+      </div>
+
+      <div class="summary-box" style="margin-top:18px;">
+        <h4>Reference Screenshot (optional)</h4>
+        <p style="margin-bottom:10px; color:var(--ink-soft); font-size:16.5px;">Screenshot yahan paste karo (Ctrl+V ya Cmd+V) — ticker/price milte hi upar wala form apne aap bharne ki koshish karega. <b>Har auto-fill ko save karne se pehle check zaroor karo.</b> Screenshot save nahi hota, sirf isi form ko bharne ke liye use hota hai.</p>
+        <div id="admShotZone" tabindex="0" onclick="document.getElementById('admShot').click()" onpaste="handleShotPaste(event)" style="border:2px dashed var(--border); border-radius:10px; padding:18px; text-align:center; cursor:pointer; background:var(--surface-2); outline:none;">
+          <div id="admShotPlaceholder" style="color:var(--ink-soft); font-size:15.5px;">📋 Yahan click karke <b>Ctrl+V</b> se screenshot paste karo — ya <u>click karke file chuno</u>.</div>
+          <img id="admShotPreview" alt="Pasted screenshot preview" style="display:none; max-width:100%; max-height:220px; border-radius:8px; margin-top:8px;">
+        </div>
+        <input type="file" accept="image/*" id="admShot" style="display:none;" onchange="if(this.files && this.files[0]) handleShotFile(this.files[0]);">
+        <div id="admShotStatus" style="font-size:15px; margin-top:8px; font-weight:600;"></div>
+      </div>
+
+      <div class="summary-box" style="margin-top:18px; border:1px solid var(--report-ac);">
+        <h4 style="color:var(--report-ac);">📄 Month ka Research Report</h4>
+        <p style="margin-bottom:10px; color:var(--ink-soft); font-size:16px;">Jis month ki report upload karengi, wo us month ke <b>Monthly Picks</b> heading ke neeche peele bar mein aa jayegi. Client bar par click karke report kholega. PDF ya image — dono chalte hain.</p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <select id="repMonth" onchange="renderRepStatus()" style="padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface-2); color:var(--ink); font-family:var(--font-mono);"></select>
+          <button onclick="document.getElementById('repFile').click()" style="background:var(--report-ac); color:#fff; border:none; padding:9px 18px; border-radius:100px; font-family:var(--font-body); font-weight:700; font-size:15.5px; cursor:pointer;">Report chuno</button>
+          <button onclick="removeMonthReport()" style="background:var(--surface-2); color:var(--ink); border:1px solid var(--border); padding:9px 16px; border-radius:100px; font-family:var(--font-body); font-weight:700; font-size:15.5px; cursor:pointer;">Hatao</button>
+          <input type="file" id="repFile" accept="application/pdf,image/*" style="display:none;" onchange="if(this.files && this.files[0]) handleReportFile(this.files[0]);">
+        </div>
+        <div id="repStatus" style="font-size:15px; margin-top:9px; font-weight:600; color:var(--ink-soft);"></div>
+      </div>
+
+      <div class="summary-box" style="margin-top:18px; border:1px solid var(--buy);">
+        <h4 style="color:var(--buy); display:flex; align-items:center; justify-content:space-between;">
+          <span>📋 Stock20 — Mid-Cap Movers Watchlist</span>
+          <span id="stock20Count" style="font-size:14px; background:var(--buy-bg); color:var(--buy); padding:3px 12px; border-radius:100px;">0 stocks</span>
+        </h4>
+        <p style="margin-bottom:10px; color:var(--ink-soft); font-size:16px;">Yahan sirf <b>NSE symbols</b> daalo (e.g. DCBBANK, KPITTECH, KTKBANK). Add karte hi list save ho jaati hai — GitHub ka robot roz market close par in sabka live data (price, day %, 1M %, 52W range, mkt cap, P/E, P/B, div yield, trend) client dashboard ke Stock20 table mein auto bhar dega. Add/delete kabhi bhi karo — agle update mein table apne aap adjust ho jayegi.</p>
+
+        <div id="stock20List" style="border:1px solid var(--border); border-radius:10px; background:var(--surface-2); max-height:340px; overflow-y:auto; margin-bottom:12px;"></div>
+
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+          <input id="stock20Input" placeholder="NSE symbol likho, e.g. DCBBANK" onkeydown="if(event.key==='Enter'){addStock20();}" style="flex:1; padding:9px 12px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--ink); font-size:16px;">
+          <button onclick="addStock20()" style="background:var(--buy); color:#fff; border:none; padding:9px 18px; border-radius:8px; font-weight:700; font-size:16px; cursor:pointer;">+ Add</button>
+        </div>
+
+        <details>
+          <summary style="cursor:pointer; color:var(--buy); font-weight:700; font-size:15.5px;">📥 Ek saath saare 20 NSE symbols paste karo</summary>
+          <p style="margin:8px 0 6px; color:var(--ink-soft); font-size:15px;">Investing Pro page se stock names copy karke yahan paste karo — har naam nayi line par (ya comma se alag). Duplicate apne aap skip ho jayenge.</p>
+          <textarea id="stock20Bulk" rows="8" placeholder="DCBBANK&#10;KPITTECH&#10;KTKBANK&#10;..." style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--ink); font-size:15.5px; font-family:var(--font-body);"></textarea>
+          <button onclick="bulkAddStock20()" style="margin-top:8px; background:var(--buy); color:#fff; border:none; padding:9px 18px; border-radius:8px; font-weight:700; font-size:16px; cursor:pointer;">Add All to List</button>
+        </details>
+      </div>
+
+      <div class="summary-box" style="border:1px solid var(--buy); background:var(--buy-bg);">
+        <h4 style="color:var(--buy);">Reuse From History</h4>
+        <p style="margin-bottom:10px; color:var(--ink-soft); font-size:16.5px;">Any stock that was ever added before (even if it was later "Booked" in some month) — its full data (indicators, chart, summary) can be selected here and added back to the current month. Old data is never deleted.</p>
+        <select id="admReuseSelect" onchange="loadFromLibrary(this.value)" style="width:100%; padding:8px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--ink);">
+          <option value="">— Naya stock (fresh add) —</option>
+        </select>
+      </div>
+
+      <div class="summary-box">
+        <h4>Stock Details</h4>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div><label style="font-size:14px; color:var(--ink-soft);">Action</label><br>
+            <select id="admAction" onchange="syncRemovedDateField()" style="width:100%; margin-top:4px; padding:8px; border-radius:8px; border:1px solid var(--border); background:var(--surface-2); color:var(--ink);">
+              <option>Added</option><option value="Removed">Booked</option>
+            </select></div>
+          <div><label style="font-size:14px; color:var(--ink-soft);">Stock Name</label><br>
+            <input id="admName" placeholder="e.g. Tata Elxsi" style="width:100%; margin-top:4px; padding:8px; border-radius:8px; border:1px solid var(--border); background:var(--surface-2); color:var(--ink);"></div>
+          <div><label style="font-size:14px; color:var(--ink-soft);">Ticker</label><br>
+            <input id="admTicker" placeholder="e.g. TATAELXSI" oninput="autoFillFromTicker()" style="width:100%; margin-top:4px; padding:8px; border-radius:8px; border:1px solid var(--border); background:var(--surface-2); color:var(--ink);"></div>
+          <div><label style="font-size:14px; color:var(--ink-soft);">Sector</label><br>
+            <input id="admSector" placeholder="e.g. Financial Services" style="width:100%; margin-top:4px; padding:8px; border-radius:8px; border:1px solid var(--border); background:var(--surface-2); color:var(--ink);"></div>
+          <div><label style="font-size:14px; color:var(--ink-soft);">Recommended Date — iska month decide karta hai stock "Added" kis month mein dikhega</label><br>
+            <input id="admDate" type="date" style="width:100%; margin-top:4px; padding:8px; border-radius:8px; border:1px solid var(--border); background:var(--surface-2); color:var(--ink);"></div>
+          <div><label style="font-size:14px; color:var(--ink-soft);">Price Added (₹)</label><br>
+            <input id="admPrice" type="number" placeholder="e.g. 6820" style="width:100%; margin-top:4px; padding:8px; border-radius:8px; border:1px solid var(--border); background:var(--surface-2); color:var(--ink);"></div>
+          <div><label style="font-size:14px; color:var(--ink-soft);">Booked Price (₹) — leave blank while Running, fill in when marking as Booked</label><br>
+            <input id="admCurrent" type="number" placeholder="e.g. 7100" style="width:100%; margin-top:4px; padding:8px; border-radius:8px; border:1px solid var(--border); background:var(--surface-2); color:var(--ink);"></div>
+          <div id="admBookedMonthWrap" style="display:none;"><label style="font-size:14px; color:var(--ink-soft);">Date Removed / Exited — iska month decide karta hai stock "Booked" kis month mein dikhega</label><br>
+            <input id="admDateRemoved" type="date" style="width:100%; margin-top:4px; padding:8px; border-radius:8px; border:1px solid var(--border); background:var(--surface-2); color:var(--ink);"></div>
+        </div>
+        <div style="margin-top:12px;">
+          <label style="font-size:14px; color:var(--ink-soft);">Rationale (Basis of Recommendation)</label><br>
+          <textarea id="admRationale" rows="3" placeholder="Enter your reasoning..." style="width:100%; margin-top:4px; padding:8px; border-radius:8px; border:1px solid var(--border); background:var(--surface-2); color:var(--ink); font-family:var(--font-body);"></textarea>
+        </div>
+        <div style="margin-top:12px;">
+          <label style="font-size:14px; color:var(--ink-soft);">Research PDF (used by this stock's "Research" button)</label><br>
+          <input type="file" accept="application/pdf" id="admResearchFile" onchange="handleResearchFile(event)" style="margin-top:4px; font-size:16.5px;">
+          <div id="admResearchStatus" style="font-size:14.5px; color:var(--ink-soft); margin-top:5px;"></div>
+          <div style="font-size:13.5px; color:var(--ink-soft); margin-top:3px;">Large PDFs (5MB+) can fill up browser storage — keep the file as small as possible.</div>
+        </div>
+        <button onclick="addStock()" id="admSubmitBtn" style="margin-top:14px; background:var(--primary); color:#fff; border:none; padding:10px 18px; border-radius:8px; font-family:var(--font-body); font-weight:700; font-size:17px; cursor:pointer;">Add to Dashboard</button>
+        <button onclick="cancelEdit()" id="admCancelBtn" style="display:none; margin-top:14px; margin-left:8px; background:var(--surface-2); color:var(--ink); border:1px solid var(--border); padding:10px 18px; border-radius:8px; font-family:var(--font-body); font-weight:700; font-size:17px; cursor:pointer;">Cancel Edit</button>
+        <span id="admStatus" style="margin-left:12px; font-size:16.5px; color:var(--pos); font-weight:700;"></span>
+      </div>
+
+      <div class="summary-box">
+        <h4>Existing Picks — all months</h4>
+        <div id="admList"></div>
+      </div>
+    </div>
+
+    <!-- DETAIL -->
+    <div id="detail-view">
+      <div class="back-btn" onclick="showOverview()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18L9 12L15 6"/></svg>
+        Back to Overview
+      </div>
+      <div class="detail-head">
+        <div>
+          <div class="detail-name" id="d-name"></div>
+          <div class="detail-sub" id="d-sub"></div>
+        </div>
+        <div>
+          <div class="detail-price" id="d-price"></div>
+          <div class="detail-change" id="d-change"></div>
+        </div>
+      </div>
+
+      <div class="chart-card" style="margin-top:16px;">
+        <div class="chart-head">
+          <div class="chart-title">Price Performance Since Added</div>
+        </div>
+        <div id="stockChart"></div>
+      </div>
+
+      <div class="indicator-grid" id="indicatorGrid"></div>
+
+      <div class="summary-box">
+        <h4>Basis of Recommendation</h4>
+        <p id="d-summary"></p>
+      </div>
+
+      <div class="two-col">
+        <div class="fair-value-box">
+          <div class="fv-label">Fair Value Upside</div>
+          <div class="fv-upside" id="d-upside"></div>
+          <div class="fv-price" id="d-fairprice"></div>
+        </div>
+        <div class="health-box">
+          <div class="health-row">
+            <div class="health-top"><span>Growth Rating</span><b id="d-growth-val"></b></div>
+            <div class="health-bar"><div class="health-fill" id="d-growth-bar"></div></div>
+          </div>
+          <div class="health-row">
+            <div class="health-top"><span>Profitability Rating</span><b id="d-profit-val"></b></div>
+            <div class="health-bar"><div class="health-fill" id="d-profit-bar"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<div class="disclaimer">
+  <b>RA Divyani Thakur</b> is a SEBI Registered Research Analyst (Reg. No. INH000021252). This is for informational/educational purposes only and does not constitute personalised investment advice. Investments in securities market are subject to market risks. Past performance is not indicative of future results. All stock ratings, fair value and rationale shown are the analyst's own research and do not guarantee outcomes. Please consult your own financial advisor before investing. Grievances: SEBI SCORES portal.
+</div>
+  </main>
+</div>
+</div>
+<!-- /app-shell -->
+
+<!-- ===== ADMIN PASSCODE MODAL ===== -->
+<div id="pwOverlay" style="display:none; position:fixed; inset:0; z-index:5000; background:rgba(8,16,10,.72); align-items:center; justify-content:center; padding:20px;">
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:26px 24px; width:100%; max-width:360px; box-shadow:0 20px 60px rgba(0,0,0,.35);">
+    <div style="font-family:var(--font-display); font-size:22px; font-weight:700; margin-bottom:6px;">Admin Access</div>
+    <div style="font-size:15px; color:var(--ink-soft); margin-bottom:16px;">Enter your admin password to open the editing panel.</div>
+    <input id="pwInput" type="password" autocomplete="off" placeholder="Password"
+      style="width:100%; padding:11px 13px; border-radius:10px; border:1px solid var(--border); background:var(--surface-2); color:var(--ink); font-size:17px; font-family:var(--font-body);">
+    <div id="pwError" style="color:var(--neg); font-size:14.5px; font-weight:700; margin-top:8px; min-height:18px;"></div>
+    <div style="display:flex; gap:10px; margin-top:12px;">
+      <button id="pwGo" style="flex:1; background:var(--primary); color:#fff; border:none; padding:11px; border-radius:100px; font-family:var(--font-body); font-weight:700; font-size:16.5px; cursor:pointer;">Unlock</button>
+      <button id="pwCancel" style="background:var(--surface-2); color:var(--ink); border:1px solid var(--border); padding:11px 18px; border-radius:100px; font-family:var(--font-body); font-weight:700; font-size:16.5px; cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ONE-TIME ACCESS KEY MODAL ===== -->
+<div id="tkOverlay" style="display:none; position:fixed; inset:0; z-index:5000; background:rgba(8,16,10,.72); align-items:center; justify-content:center; padding:20px;">
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:26px 24px; width:100%; max-width:430px; box-shadow:0 20px 60px rgba(0,0,0,.35);">
+    <div style="font-family:var(--font-display); font-size:22px; font-weight:700; margin-bottom:6px;">One-time setup</div>
+    <div style="font-size:15px; color:var(--ink-soft); line-height:1.55; margin-bottom:16px;">Auto-save chaalu karne ke liye apni GitHub access key ek baar paste karein. Ye sirf <b>isi browser</b> mein save hoti hai — dobara kabhi nahi poochi jayegi.</div>
+    <input id="tkInput" type="password" autocomplete="off" placeholder="github_pat_..."
+      style="width:100%; padding:11px 13px; border-radius:10px; border:1px solid var(--border); background:var(--surface-2); color:var(--ink); font-size:16px; font-family:var(--font-mono);">
+    <div id="tkError" style="color:var(--neg); font-size:14.5px; font-weight:700; margin-top:8px; min-height:18px;"></div>
+    <div style="display:flex; gap:10px; margin-top:12px;">
+      <button id="tkGo" style="flex:1; background:var(--primary); color:#fff; border:none; padding:11px; border-radius:100px; font-family:var(--font-body); font-weight:700; font-size:16.5px; cursor:pointer;">Save & Connect</button>
+      <button id="tkCancel" style="background:var(--surface-2); color:var(--ink); border:1px solid var(--border); padding:11px 18px; border-radius:100px; font-family:var(--font-body); font-weight:700; font-size:16.5px; cursor:pointer;">Later</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADMIN LOCK (bottom-left corner) ===== -->
+<button id="lockBtn" onclick="openAdmin()" title="Admin">
+  <svg id="lockIcon" viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10" rx="2.2"/><path id="lockShackle" d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
+</button>
+
+<!-- ===== CHANGE PASSWORD MODAL ===== -->
+<div id="cpOverlay" style="display:none; position:fixed; inset:0; z-index:5000; background:rgba(8,16,10,.72); align-items:center; justify-content:center; padding:20px;">
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:26px 24px; width:100%; max-width:400px; box-shadow:0 20px 60px rgba(0,0,0,.35);">
+    <div style="font-family:var(--font-display); font-size:22px; font-weight:700; margin-bottom:6px;">Admin password badlein</div>
+    <div style="font-size:15px; color:var(--ink-soft); line-height:1.55; margin-bottom:16px;">Naya password sab devices par lagu ho jayega aur purana turant band ho jayega. Koi employee chhod kar jaye to yahi use karein.</div>
+    <input id="cpNew1" type="password" autocomplete="new-password" placeholder="Naya password" style="width:100%; padding:11px 13px; border-radius:10px; border:1px solid var(--border); background:var(--surface-2); color:var(--ink); font-size:16px; font-family:var(--font-body);">
+    <input id="cpNew2" type="password" autocomplete="new-password" placeholder="Dobara likhein" style="width:100%; margin-top:9px; padding:11px 13px; border-radius:10px; border:1px solid var(--border); background:var(--surface-2); color:var(--ink); font-size:16px; font-family:var(--font-body);">
+    <div id="cpError" style="color:var(--neg); font-size:14.5px; font-weight:700; margin-top:8px; min-height:18px;"></div>
+    <div style="display:flex; gap:10px; margin-top:12px;">
+      <button id="cpGo" style="flex:1; background:var(--primary); color:#fff; border:none; padding:11px; border-radius:100px; font-family:var(--font-body); font-weight:700; font-size:16.5px; cursor:pointer;">Badlo</button>
+      <button id="cpCancel" style="background:var(--surface-2); color:var(--ink); border:1px solid var(--border); padding:11px 18px; border-radius:100px; font-family:var(--font-body); font-weight:700; font-size:16.5px; cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== UNSAVED WORK BANNER ===== -->
+<div id="dirtyBanner" style="display:none; position:fixed; top:0; left:0; right:0; z-index:4500; align-items:center; gap:14px; flex-wrap:wrap; background:#7A2E29; color:#fff; padding:11px 20px; font-size:15px; box-shadow:0 3px 14px rgba(0,0,0,.3);">
+  <span style="font-size:18px;">⚠️</span>
+  <span id="dirtyMsg" style="flex:1; min-width:220px; line-height:1.5;"></span>
+  <button onclick="saveNow()" style="background:#fff; color:#7A2E29; border:none; padding:8px 16px; border-radius:100px; font-family:var(--font-body); font-weight:700; font-size:15px; cursor:pointer;">Save now</button>
+  <button onclick="downloadDataJsonBackup()" style="background:none; color:#fff; border:1px solid rgba(255,255,255,.55); padding:8px 14px; border-radius:100px; font-family:var(--font-body); font-weight:700; font-size:14.5px; cursor:pointer;">Download backup</button>
+  <button onclick="discardLocalChanges()" style="background:none; color:#fff; border:none; text-decoration:underline; font-family:var(--font-body); font-size:14px; cursor:pointer;">Discard</button>
+</div>
+
+<!-- ===== AUTO-SAVE STATUS PILL ===== -->
+<div id="autoPill" style="display:none; position:fixed; right:20px; bottom:74px; z-index:4000; background:var(--surface); border:1px solid var(--border); border-radius:100px; padding:9px 16px; font-size:14.5px; font-weight:700; box-shadow:var(--shadow); color:var(--ink-soft);"></div>
+
+<script>
+/* ============================================================
+   SAFE STORAGE  —  localStorage / sessionStorage har jagah
+   available nahi hota (Safari on file://, private mode, kuch
+   corporate policies). Pehle direct access tha, jo aise case
+   mein poora page tod deta. Ab in-memory fallback chalta hai:
+   dashboard chalta rehta hai, bas us tab ke baad yaad nahi rehta.
+   ============================================================ */
+const MEM_LS = {}, MEM_SS = {};
+function _store(kind){
+  try{
+    const s = kind === 'local' ? window.localStorage : window.sessionStorage;
+    const probe = '__ae_probe__';
+    s.setItem(probe, '1'); s.removeItem(probe);
+    return s;
+  }catch(e){ return null; }
+}
+const LS = { get(k){ const s=_store('local'); try{ return s ? s.getItem(k) : (k in MEM_LS ? MEM_LS[k] : null); }catch(e){ return k in MEM_LS ? MEM_LS[k] : null; } },
+             set(k,v){ MEM_LS[k]=String(v); const s=_store('local'); if(s){ try{ s.setItem(k,v); }catch(e){} } },
+             del(k){ delete MEM_LS[k]; const s=_store('local'); if(s){ try{ s.removeItem(k); }catch(e){} } } };
+const SS = { del(k){ delete MEM_SS[k]; const s=_store('session'); if(s){ try{ s.removeItem(k); }catch(e){} } },
+             get(k){ const s=_store('session'); try{ return s ? s.getItem(k) : (k in MEM_SS ? MEM_SS[k] : null); }catch(e){ return k in MEM_SS ? MEM_SS[k] : null; } },
+             set(k,v){ MEM_SS[k]=String(v); const s=_store('session'); if(s){ try{ s.setItem(k,v); }catch(e){} } } };
+
+/* ============================================================
+   UNSAVED-WORK GUARD
+   Pehle Refresh (aur 5-min auto refresh) seedha remote data ko
+   local ke upar likh deta tha. Agar auto-save fail hua ho to
+   naye stocks gayab ho jaate the. Ab har change "DIRTY" mark
+   hota hai aur DIRTY hone par koi bhi refresh data ko chhoo
+   nahi sakta — jab tak GitHub par confirm save na ho jaye.
+   Flag storage mein rehta hai, so page reload par bhi safe.
+   ============================================================ */
+const DIRTY_KEY = 'analystedge_dirty';
+/* raw.githubusercontent CDN 5 minute tak purani copy serve kar sakta hai.
+   Isi wajah se push ke turant baad Refresh dabane par purana data aa jaata
+   tha aur naya mahina/stocks screen se gayab ho jaate the. Ab hum yaad
+   rakhte hain ki humne kaunsa updatedAt dekha/likha tha, aur usse PURANI
+   copy ko kabhi accept nahi karte. */
+const SEEN_KEY = 'analystedge_seen_updated';
+function seenUpdated(){ return LS.get(SEEN_KEY) || ''; }
+function noteUpdated(t){ if(t && String(t) > seenUpdated()) LS.set(SEEN_KEY, String(t)); }
+let DIRTY = false;
+let LAST_SAVE_ERROR = '';
+
+function updateDirtyBanner(){
+  const b = document.getElementById('dirtyBanner');
+  const msg = document.getElementById('dirtyMsg');
+  if(!b || !msg) return;
+  if(!DIRTY || !dirtyVisible){ b.style.display = 'none'; return; }
+  b.style.display = 'flex';
+  msg.innerHTML = '<b>Save pending</b> — aapke naye changes abhi sirf is browser mein hain, GitHub par nahi gaye.'
+    + (LAST_SAVE_ERROR ? ' <span style="opacity:.85;">Reason: ' + escHtml(LAST_SAVE_ERROR) + '</span>' : '')
+    + ' Refresh block kar diya gaya hai taaki data na khoye.';
+}
+/* Banner sirf tab dikhna chahiye jab save SACH MEIN atak jaye.
+   Normal add mein push 1-2 second leta hai — us beech laal banner
+   dikhana galat alarm tha. Ab grace period ke baad ya explicit
+   failure par hi dikhta hai. Normal flow ke liye chhoti pill kaafi hai. */
+const DIRTY_GRACE_MS = 8000;
+let dirtyRevealTimer = null;
+let dirtyVisible = false;
+
+function showDirtyBanner(){ dirtyVisible = true; updateDirtyBanner(); }
+
+function markDirty(){
+  DIRTY = true;
+  LS.set(DIRTY_KEY, '1');
+  // turant banner nahi — pehle save ko mauka do
+  clearTimeout(dirtyRevealTimer);
+  dirtyRevealTimer = setTimeout(()=>{ if(DIRTY) showDirtyBanner(); }, DIRTY_GRACE_MS);
+  updateDirtyBanner();
+}
+function failDirty(reason){
+  LAST_SAVE_ERROR = reason || '';
+  if(DIRTY) showDirtyBanner();
+}
+function clearDirty(){
+  DIRTY = false; LAST_SAVE_ERROR = '';
+  dirtyVisible = false;
+  clearTimeout(dirtyRevealTimer);
+  LS.del(DIRTY_KEY);
+  updateDirtyBanner();
+}
+function loadDirty(){
+  DIRTY = (LS.get(DIRTY_KEY) === '1');
+  // reload par pending dikhe to wo sach mein pending hai — turant batao
+  if(DIRTY) dirtyVisible = true;
+  updateDirtyBanner();
+}
+
+function discardLocalChanges(){
+  if(!confirm('Is browser ke unsaved changes hata kar online (published) data wapas laayein?\n\nYe undo nahi hoga.')) return;
+  clearDirty();
+  fetchRemoteData(true);
+}
+
+function enterDashboard(){
+  document.getElementById('landing-page').style.display='none';
+  const shell = document.getElementById('app-shell');
+  shell.style.display='flex';
+  renderPerfChart();
+}
+
+function backToLanding(){
+  document.getElementById('app-shell').style.display='none';
+  document.getElementById('landing-page').style.display='flex';
+}
+
+function toggleTheme(){
+  const b=document.body;
+  b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark');
+  renderPerfChart();
+}
+
+function lineSVG(values, w, h, color, dashed){
+  const max=Math.max(...values), min=Math.min(...values), range=(max-min)||1;
+  const stepX=w/(values.length-1);
+  const pts=values.map((v,i)=> `${(i*stepX).toFixed(1)},${(h-((v-min)/range)*(h-16)-8).toFixed(1)}`).join(' ');
+  return `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="${dashed?1.6:2.6}" ${dashed?'stroke-dasharray="5,4"':''} stroke-linejoin="round" stroke-linecap="round"/>`;
+}
+function areaSVG(values, w, h, color){
+  const max=Math.max(...values), min=Math.min(...values), range=(max-min)||1;
+  const stepX=w/(values.length-1);
+  const pts=values.map((v,i)=> `${(i*stepX).toFixed(1)},${(h-((v-min)/range)*(h-16)-8).toFixed(1)}`).join(' ');
+  return `<polygon points="0,${h} ${pts} ${w},${h}" fill="${color}" fill-opacity="0.10"/>`;
+}
+
+const perfA=[100,132,178,161,258,398,512,640];
+const perfB=[100,111,141,152,191,231,258,289];
+
+function renderPerfChart(){
+  const w=900,h=230;
+  const pos=getComputedStyle(document.body).getPropertyValue('--pos-line').trim();
+  const soft=getComputedStyle(document.body).getPropertyValue('--ink-soft').trim();
+  document.getElementById('perfChart').innerHTML=
+    `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none">
+      ${areaSVG(perfA,w,h,pos)}
+      ${lineSVG(perfB,w,h,soft,true)}
+      ${lineSVG(perfA,w,h,pos,false)}
+    </svg>`;
+}
+
+let livePrices = {};
+function symKey(s){ return String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
+/* Flat list — koi month-bucket storage nahi. Har pick apni asli
+   dateAdded (aur, Removed hone par, dateRemoved) rakhta hai; "kis month
+   mein dikhega" hamesha inhi se calculate hota hai (monthLabelFromDate). */
+let picks = [];
+/* Har month ka apna research report (PDF). Stock-wise Research button
+   ki jagah ab month-level bar hai. */
+let monthReports = {};
+function saveReports(){ try{ LS.set('analystedge_reports', JSON.stringify(monthReports)); }catch(e){} }
+function loadReports(){ try{ const r = LS.get('analystedge_reports'); if(r) monthReports = JSON.parse(r) || {}; }catch(e){ monthReports = {}; } }
+
+function fmtPct(v){
+  const cls=v>=0?'pct-pos':'pct-neg';
+  const sign=v>=0?'+':'';
+  return `<span class="${cls}">${sign}${v.toFixed(1)}%</span>`;
+}
+
+function cpCell(s){
+  const p = s.currentPrice;
+  if(p == null) return '<span style="color:var(--ink-soft);">—</span>';
+  const live = livePrices[symKey(s.name)] != null || livePrices[symKey(s.ticker)] != null;
+  const txt = '₹' + Number(p).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+  return live ? '<span class="cp-live"><span class="cp-dot"></span>' + txt + '</span>' : txt;
+}
+
+function renderTable(){
+  const month=document.getElementById('monthSelect').value;
+  const body0=document.getElementById('picksBody');
+  // Koi month hi nahi = data abhi aaya hi nahi. Ise "No stocks found"
+  // kehna galat aur darawana hai — sach batao.
+  if(!month || !String(month).trim()){
+    document.getElementById('tableLabelText').textContent = 'Monthly Picks';
+    renderReportBar('');
+    if(body0) body0.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--ink-soft); padding:28px; line-height:1.6;">'
+      + (SYNC_READY ? 'Abhi koi month add nahi hua hai.'
+                    : 'Data load ho raha hai…<br><span style="font-size:13.5px;">Na aaye to niche wala button dabayein.</span>'
+                      + '<br><button onclick="hardReload()" style="margin-top:14px; background:var(--primary); color:#fff; border:none; padding:9px 20px; border-radius:100px; font-family:var(--font-body); font-weight:700; font-size:15px; cursor:pointer;">Load fresh data</button>')
+      + '</td></tr>';
+    renderOpenPositions();
+    return;
+  }
+  document.getElementById('tableLabelText').textContent = 'Monthly Picks — ' + month;
+  renderReportBar(month);
+  const q=(document.getElementById('searchInput').value||'').toLowerCase();
+  const rows=rowsForMonth(month)
+    .filter(s=> !q || s.name.toLowerCase().includes(q) || s.ticker.toLowerCase().includes(q) || String(s.sector||'').toLowerCase().includes(q));
+  // Added upar, Booked sabse neeche. Har group ke andar original order
+  // waisa ka waisa (stable sort) — _i bhi sahi rehta hai, isliye row
+  // click aur Edit dono theek jagah kholte hain.
+  rows.sort((a,b)=> (a._view==='Added'?0:1) - (b._view==='Added'?0:1));
+  const body=document.getElementById('picksBody');
+  body.innerHTML = rows.map(s=>`
+    <tr data-idx="${s._i}" data-ticker="${escAttr(s.ticker)}" class="pick-row">
+      <td><div class="row-name">${escHtml(s.name)}</div><div class="row-ticker">${escHtml(s.ticker)} · ${escHtml(s.sector)}${s._from ? ` · <span style="color:var(--booked);">bought ${escHtml(s._from)}</span>` : ''}</div></td>
+      <td class="row-ticker">₹${s.priceAdded}</td>
+      <td class="cp-cell" data-cp="${escAttr(s.name)}">${s._view==='Booked' ? fmtFrozenPrice(s) : cpCell(s)}</td>
+      <td>${fmtPct(s.returnPct)}</td>
+      <td>${statusCell(s)}</td>
+    </tr>`).join('') || `<tr><td colspan="5" style="text-align:center; color:var(--ink-soft); padding:24px;">${q ? 'Is search se kuch nahi mila.' : 'Is month mein abhi koi stock nahi hai.'}</td></tr>`;
+  renderOpenPositions();
+}
+
+/* Status column: sirf "Added"/"Booked" tag nahi, balki EXACT date bhi
+   saath dikhata hai — taaki ek nazar mein pata chale kya hua aur kis din
+   hua, koi guess-work nahi. Added ke liye Recommended Date, Booked ke
+   liye asli Date Removed/Exited. */
+function statusCell(s){
+  const tag = `<span class="action-tag ${s._view==='Added'?'tag-added':'tag-removed'}">${s._view}</span>`;
+  const dateText = s._view==='Added' ? fmtDate(s.dateAdded) : fmtDate(s.dateRemoved);
+  return tag + `<div style="font-size:12.5px; color:var(--ink-soft); margin-top:3px; white-space:nowrap;">${s._view==='Added' ? 'ho gaya:' : 'booked:'} ${dateText}</div>`;
+}
+
+/* Removed/Booked pick ki price ab kabhi live-update nahi hoti (exit ke
+   time frozen ho jaati hai) — is liye cpCell() (jo live dot dikhata hai)
+   ke bajaye ye plain, non-live cell use hota hai. */
+function fmtFrozenPrice(s){
+  if(s.currentPrice == null) return '<span style="color:var(--ink-soft);">—</span>';
+  return '₹' + Number(s.currentPrice).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function fmtDate(d){
+  if(!d) return '—';
+  const dt = new Date(d.length <= 10 ? d + 'T00:00:00' : d);
+  if(isNaN(dt.getTime())) return '—';
+  return dt.toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'});
+}
+
+function getAllOpenPositions(){
+  const rows = [];
+  picks.forEach((s,i)=>{
+    if(s.action === 'Added') rows.push(Object.assign({}, s, {_month: monthLabelFromDate(s.dateAdded) || '—', _idx:i}));
+  });
+  rows.sort((a,b)=> (a.dateAdded||'') < (b.dateAdded||'') ? 1 : -1);
+  return rows;
+}
+
+function renderOpenPositions(){
+  const body = document.getElementById('openPosBody');
+  const rows = getAllOpenPositions();
+  const openPosEl = document.getElementById('openPosCount');
+  if(openPosEl) openPosEl.textContent = rows.length;
+  if(!body) return;
+  body.innerHTML = rows.map(s=>`
+    <tr data-idx="${s._idx}" data-ticker="${escAttr(s.ticker)}" class="pick-row">
+      <td><div class="row-name">${escHtml(s.name)}</div><div class="row-ticker">${escHtml(s.ticker)} · ${escHtml(s.sector)}</div></td>
+      <td class="row-ticker">${escHtml(s._month)}</td>
+      <td class="row-ticker">${fmtDate(s.dateAdded)}</td>
+      <td class="row-ticker">₹${s.priceAdded}</td>
+      <td class="cp-cell" data-cp="${escAttr(s.name)}">${cpCell(s)}</td>
+      <td>${fmtPct(s.returnPct)}</td>
+    </tr>`).join('') || `<tr><td colspan="6" style="text-align:center; color:var(--ink-soft); padding:24px;">No open positions right now.</td></tr>`;
+}
+
+function showOpenPositions(){
+  document.getElementById('overview-view').style.display='none';
+  document.getElementById('detail-view').style.display='none';
+  var av = document.getElementById('admin-view'); if(av) av.style.display='none';
+  document.getElementById('openpos-view').style.display='block';
+  document.getElementById('navDashboard').classList.remove('active');
+  document.getElementById('navOpenPos').classList.add('active');
+
+  renderOpenPositions();
+  window.scrollTo(0,0);
+}
+
+function applySearch(){ renderTable(); renderStock20Table(); }
+
+function escHtml(str){
+  return String(str==null?'':str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function escAttr(str){ return escHtml(str); }
+
+// Event delegation for the picks table — avoids any bugs from stock
+// names/tickers containing special characters like quotes.
+document.addEventListener('click', function(e){
+  const researchBtn = e.target.closest('[data-action="research"]');
+  if(researchBtn){
+    e.stopPropagation();
+    openResearch(researchBtn.dataset.idx, researchBtn.dataset.ticker);
+    return;
+  }
+  const emptyBtn = e.target.closest('[data-action="research-empty"]');
+  if(emptyBtn){
+    e.stopPropagation();
+    alert('No research PDF has been uploaded for this yet. Upload one from the Admin panel.');
+    return;
+  }
+  const row = e.target.closest('.pick-row');
+  if(row){
+    showDetail(row.dataset.idx, row.dataset.ticker);
+    return;
+  }
+  const editBtn = e.target.closest('[data-action="edit-pick"]');
+  if(editBtn){
+    editStock(Number(editBtn.dataset.index));
+    return;
+  }
+  const delBtn = e.target.closest('[data-action="delete-pick"]');
+  if(delBtn){
+    deleteStock(Number(delBtn.dataset.index));
+    return;
+  }
+});
+
+function openResearch(idx, ticker){
+  const stock = pickAt(idx, ticker);
+  if(!stock || !stock.researchPdf){ alert('Research PDF not found.'); return; }
+  try{
+    const url = dataUrlToObjectUrl(stock.researchPdf);
+    const win = window.open(url, '_blank');
+    if(!win){
+      alert('Popup blocked — please allow popups to view the research PDF, or check your browser settings.');
+    }
+  }catch(err){
+    alert('Could not open the Research PDF. The file may be corrupted — try re-uploading it.');
+  }
+}
+
+// Converts a base64 data: URL into a blob: URL. Chrome/Edge block direct
+// top-level navigation to large data: URLs (that's why the Research button
+// wasn't opening) — blob: URLs don't have that restriction.
+function dataUrlToObjectUrl(dataUrl){
+  const commaIdx = dataUrl.indexOf(',');
+  const header = dataUrl.slice(0, commaIdx);
+  const base64 = dataUrl.slice(commaIdx + 1);
+  const mimeMatch = header.match(/data:(.*?);base64/);
+  const mime = mimeMatch ? mimeMatch[1] : 'application/pdf';
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for(let i = 0; i < binary.length; i++){ bytes[i] = binary.charCodeAt(i); }
+  const blob = new Blob([bytes], {type: mime});
+  return URL.createObjectURL(blob);
+}
+
+/* Index se dhoondte hain, ticker se nahi — kyunki ek hi ticker do baar ho
+   sakta hai (e.g. KTKBANK ek baar Added, ek baar Booked). Ticker sirf
+   fallback hai. */
+function pickAt(idx, ticker){
+  const i = Number(idx);
+  if(Number.isInteger(i) && i >= 0 && i < picks.length){
+    if(!ticker || picks[i].ticker === ticker) return picks[i];
+  }
+  return picks.find(s=>s.ticker===ticker) || null;
+}
+
+function showDetail(idx, ticker){
+  const stock = pickAt(idx, ticker);
+  if(!stock) return;
+  document.getElementById('overview-view').style.display='none';
+  var opv = document.getElementById('openpos-view'); if(opv) opv.style.display='none';
+  var adv = document.getElementById('admin-view'); if(adv) adv.style.display='none';
+  document.getElementById('detail-view').style.display='block';
+
+  document.getElementById('d-name').textContent=stock.name;
+  document.getElementById('d-sub').textContent=`${stock.ticker} · ${stock.sector} · NSE`;
+  document.getElementById('d-price').textContent='₹'+stock.currentPrice;
+  document.getElementById('d-change').innerHTML=fmtPct(stock.returnPct)+' since added';
+
+  const pos=getComputedStyle(document.body).getPropertyValue('--pos-line').trim();
+  const neg=getComputedStyle(document.body).getPropertyValue('--neg-line').trim();
+  const col = stock.returnPct>=0? pos: neg;
+  document.getElementById('stockChart').innerHTML =
+    `<svg viewBox="0 0 900 200" width="100%" height="200" preserveAspectRatio="none">
+      ${areaSVG(stock.chart,900,200,col)}
+      ${lineSVG(stock.chart,900,200,col,false)}
+    </svg>`;
+
+  const grid=document.getElementById('indicatorGrid');
+  grid.innerHTML = Object.entries(stock.indicators).map(([k,v])=>
+    `<div class="indicator"><div class="indicator-label">${k}</div><div class="indicator-value">${v}</div></div>`).join('');
+
+  document.getElementById('d-summary').textContent=stock.summary;
+  document.getElementById('d-upside').textContent=(stock.upside>=0?'+':'')+stock.upside.toFixed(1)+'%';
+  document.getElementById('d-upside').style.color = stock.upside>=0? 'var(--pos)':'var(--neg)';
+  document.getElementById('d-fairprice').textContent='Fair Value: ₹'+stock.fairPrice.toFixed(1);
+
+  document.getElementById('d-growth-val').textContent=stock.growth.toFixed(1)+'/10';
+  document.getElementById('d-growth-bar').style.width=(stock.growth*10)+'%';
+  document.getElementById('d-profit-val').textContent=stock.profitability.toFixed(1)+'/10';
+  document.getElementById('d-profit-bar').style.width=(stock.profitability*10)+'%';
+
+  window.scrollTo(0,0);
+}
+
+let editingIndex = null;
+
+// stockLibrary: permanent record of every stock ever entered, keyed by ticker.
+// This is NEVER auto-deleted. Removing a pick from a month only unlists it
+// from that month's array — the full record (indicators, chart, summary,
+// fair value etc.) always stays here so it can be reused later.
+let stockLibrary = {};
+
+function upsertLibrary(stock){
+  stockLibrary[stock.ticker] = {
+    ticker: stock.ticker, name: stock.name, sector: stock.sector,
+    indicators: stock.indicators, chart: stock.chart, summary: stock.summary,
+    upside: stock.upside, fairPrice: stock.fairPrice,
+    growth: stock.growth, profitability: stock.profitability,
+    lastPriceAdded: stock.priceAdded, lastCurrentPrice: stock.currentPrice,
+    lastRationale: stock.rationale, researchPdf: stock.researchPdf || null
+  };
+  saveLibrary();
+  populateReuseSelect();
+}
+
+function saveLibrary(){
+  try{ LS.set('analystedge_library', JSON.stringify(stockLibrary)); }
+  catch(e){ console.error('Library save failed', e); }
+}
+
+function loadLibrary(){
+  try{
+    const raw = LS.get('analystedge_library');
+    if(raw){ stockLibrary = JSON.parse(raw); return; }
+  }catch(e){ /* fall through to seeding */ }
+  // First run — seed the library from whatever is already in picks
+  // so nothing already in the dashboard is ever lost.
+  picks.forEach(s => { if(!stockLibrary[s.ticker]) upsertLibrarySilent(s); });
+  saveLibrary();
+}
+
+function upsertLibrarySilent(stock){
+  stockLibrary[stock.ticker] = {
+    ticker: stock.ticker, name: stock.name, sector: stock.sector,
+    indicators: stock.indicators, chart: stock.chart, summary: stock.summary,
+    upside: stock.upside, fairPrice: stock.fairPrice,
+    growth: stock.growth, profitability: stock.profitability,
+    lastPriceAdded: stock.priceAdded, lastCurrentPrice: stock.currentPrice,
+    lastRationale: stock.rationale, researchPdf: stock.researchPdf || null
+  };
+}
+
+function populateReuseSelect(){
+  const sel = document.getElementById('admReuseSelect');
+  if(!sel) return;
+  const current = sel.value;
+  const tickers = Object.keys(stockLibrary).sort();
+  sel.innerHTML = '<option value="">— Naya stock (fresh add) —</option>' +
+    tickers.map(t => `<option value="${t}">${stockLibrary[t].name} (${t})</option>`).join('');
+  if(tickers.includes(current)) sel.value = current;
+}
+
+let selectedLibTicker = null;
+let pendingResearchPdf = null;
+
+function handleResearchFile(event){
+  const file = event.target.files && event.target.files[0];
+  const status = document.getElementById('admResearchStatus');
+  if(!file){ return; }
+  if(file.type !== 'application/pdf'){
+    status.style.color = 'var(--neg)';
+    status.textContent = 'Only PDF files are allowed.';
+    event.target.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    pendingResearchPdf = reader.result;
+    status.style.color = 'var(--pos)';
+    status.textContent = '"' + file.name + '" attached — it will be saved when you click "Add to Dashboard".';
+  };
+  reader.onerror = () => {
+    status.style.color = 'var(--neg)';
+    status.textContent = 'Could not read the PDF, please try again.';
+  };
+  reader.readAsDataURL(file);
+}
+
+// Light-touch auto-fill: as soon as a ticker matching one you've entered
+// before is typed directly (not via the "Reuse From History" dropdown),
+// quietly fill in its Sector and Name — but only into fields you haven't
+// already set yourself, so it never overwrites your own edits. There's no
+// live database of NSE sectors on this static site, so a genuinely NEW
+// ticker (never entered before) still needs
+// Sector picked by hand — this only recognizes tickers already in your
+// history.
+function autoFillFromTicker(){
+  const ticker = document.getElementById('admTicker').value.trim().toUpperCase();
+  if(!ticker) return;
+  const sectorField = document.getElementById('admSector');
+  const known = STOCK_SECTOR_MAP[ticker];
+  if(!sectorField.value.trim() && known){
+    sectorField.value = known.sector;
+  }
+  const lib = stockLibrary[ticker];
+  if(!lib) return;
+  if(!sectorField.value.trim() && lib.sector) sectorField.value = lib.sector;
+  const nameField = document.getElementById('admName');
+  if(!nameField.value.trim() && lib.name) nameField.value = lib.name;
+}
+
+// ---- Screenshot paste + best-effort OCR auto-fill ----
+// Nothing here is ever saved/submitted automatically — it only fills empty
+// form fields so the admin still has to review and click "Add to Dashboard".
+
+function resetShotUI(){
+  const zone = document.getElementById('admShotZone');
+  const preview = document.getElementById('admShotPreview');
+  const placeholder = document.getElementById('admShotPlaceholder');
+  const status = document.getElementById('admShotStatus');
+  const fileInput = document.getElementById('admShot');
+  if(preview){ preview.style.display = 'none'; preview.src = ''; }
+  if(placeholder) placeholder.style.display = 'block';
+  if(status){ status.textContent = ''; status.style.color = ''; }
+  if(fileInput) fileInput.value = '';
+  if(zone) zone.style.borderColor = '';
+}
+
+function handleShotPaste(e){
+  const items = (e.clipboardData || window.clipboardData) ? (e.clipboardData || window.clipboardData).items : null;
+  if(!items) return;
+  for(const item of items){
+    if(item.type && item.type.indexOf('image/') === 0){
+      const file = item.getAsFile();
+      if(file){ e.preventDefault(); handleShotFile(file); }
+      return;
+    }
+  }
+}
+
+function handleShotFile(file){
+  if(!file || !file.type || file.type.indexOf('image/') !== 0) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    const dataUrl = ev.target.result;
+    const preview = document.getElementById('admShotPreview');
+    const placeholder = document.getElementById('admShotPlaceholder');
+    if(preview){ preview.src = dataUrl; preview.style.display = 'block'; }
+    if(placeholder) placeholder.style.display = 'none';
+    runOcrOnImage(dataUrl);
+  };
+  reader.readAsDataURL(file);
+}
+
+let tesseractLoadPromise = null;
+function loadTesseractLib(){
+  if(window.Tesseract) return Promise.resolve();
+  if(tesseractLoadPromise) return tesseractLoadPromise;
+  tesseractLoadPromise = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+    s.onload = () => resolve();
+    s.onerror = () => { tesseractLoadPromise = null; reject(new Error('could not load OCR library (check internet connection)')); };
+    document.head.appendChild(s);
+  });
+  return tesseractLoadPromise;
+}
+
+async function runOcrOnImage(dataUrl){
+  const status = document.getElementById('admShotStatus');
+  if(status){ status.textContent = '🔍 Screenshot padh raha hoon… (kuch second lag sakte hain)'; status.style.color = 'var(--ink-soft)'; }
+  try{
+    await loadTesseractLib();
+    const result = await Tesseract.recognize(dataUrl, 'eng');
+    const text = (result && result.data && result.data.text) ? result.data.text : '';
+    parseOcrText(text);
+  }catch(err){
+    if(status){
+      status.textContent = 'Screenshot attach ho gaya, par text apne aap padh nahi paya (' + (err && err.message ? err.message : 'unknown error') + '). Form manually bhar do.';
+      status.style.color = 'var(--ink-soft)';
+    }
+  }
+}
+
+function parseOcrText(rawText){
+  const status = document.getElementById('admShotStatus');
+  const text = (rawText || '').toUpperCase();
+  const escapeRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  // Longest tickers first, so "KPITTECH" wins over a shorter accidental substring.
+  const candidates = Array.from(new Set([...Object.keys(STOCK_SECTOR_MAP), ...Object.keys(stockLibrary)]))
+    .filter(t => t.length >= 3)
+    .sort((a, b) => b.length - a.length);
+
+  let matchedTicker = null;
+  for(const t of candidates){
+    const re = new RegExp('(^|[^A-Z0-9])' + escapeRe(t) + '($|[^A-Z0-9])');
+    if(re.test(text)){ matchedTicker = t; break; }
+  }
+
+  let filledTicker = false, filledPrice = false;
+
+  if(matchedTicker){
+    const tickerField = document.getElementById('admTicker');
+    if(tickerField && !tickerField.value.trim()){
+      tickerField.value = matchedTicker.replace(/\s+/g, '');
+      autoFillFromTicker();
+      tickerField.style.outline = '2px solid orange';
+      filledTicker = true;
+    }
+  }
+
+  // Best-effort price: ₹ / Rs / INR followed by a number.
+  const priceMatch = rawText.match(/(?:₹|Rs\.?|INR)\s*([0-9][0-9,]*\.?[0-9]*)/i);
+  if(priceMatch){
+    const priceField = document.getElementById('admPrice');
+    if(priceField && !priceField.value.trim()){
+      priceField.value = priceMatch[1].replace(/,/g, '');
+      priceField.style.outline = '2px solid orange';
+      filledPrice = true;
+    }
+  }
+
+  if(status){
+    if(filledTicker || filledPrice){
+      const parts = [];
+      if(filledTicker) parts.push('ticker/sector');
+      if(filledPrice) parts.push('price');
+      status.innerHTML = '🔍 Auto-detected ' + parts.join(' & ') + ' from screenshot — <b>save karne se pehle verify zaroor karo</b>.';
+      status.style.color = 'var(--buy)';
+    } else {
+      status.textContent = 'Screenshot attach ho gaya. Koi known stock/price confidently detect nahi hua — form manually bhar do.';
+      status.style.color = 'var(--ink-soft)';
+    }
+  }
+}
+
+function loadFromLibrary(ticker){
+  selectedLibTicker = ticker || null;
+  const status = document.getElementById('admResearchStatus');
+  document.getElementById('admResearchFile').value = '';
+  if(!ticker){ pendingResearchPdf = null; if(status){ status.textContent=''; } return; }
+  const lib = stockLibrary[ticker];
+  if(!lib) return;
+  document.getElementById('admName').value = lib.name;
+  document.getElementById('admTicker').value = lib.ticker;
+  document.getElementById('admSector').value = lib.sector || '';
+  document.getElementById('admPrice').value = lib.lastCurrentPrice ?? lib.lastPriceAdded;
+  document.getElementById('admCurrent').value = lib.lastCurrentPrice ?? lib.lastPriceAdded;
+  document.getElementById('admRationale').value = lib.lastRationale || lib.summary || '';
+  pendingResearchPdf = lib.researchPdf || null;
+  document.getElementById('admStatus').style.color = 'var(--buy)';
+  document.getElementById('admStatus').textContent = lib.name + "'s previous data has been loaded — update the price/action/rationale and click \"Add to Dashboard\".";
+  if(status){
+    status.style.color = 'var(--ink-soft)';
+    status.textContent = lib.researchPdf ? 'The existing research PDF will carry over (choose a new file to replace it).' : "No research PDF for this yet — you can upload one here if you'd like.";
+  }
+}
+
+// Known Sector for specific stocks — researched by hand (NSE doesn't publish
+// a free bulk company→sector file). Covers the tickers already in this
+// site's picks history and Stock20 watchlist as of 2026-09-03, keyed by
+// every ticker spelling seen in the data so lookups still match. This map
+// is checked BEFORE the "added before" history, so even a stock never
+// entered here gets its Sector auto-filled the moment a listed ticker is
+// typed — Sector stays a plain text field, so this is just a starting
+// suggestion and can always be retyped by hand. Add more entries here any
+// time you research a new one.
+const STOCK_SECTOR_MAP = {
+  "DCBBANK":   { sector: "Financial Services" },
+  "DCB BANK":  { sector: "Financial Services" },
+  "KTKBANK":   { sector: "Financial Services" },
+  "TMB":       { sector: "Financial Services" },
+  "IIFLCAPS":  { sector: "Financial Services" },
+  "AKUMS":     { sector: "Healthcare" },
+  "KPITTECH":  { sector: "Information Technology" },
+  "KPIT TECH": { sector: "Information Technology" },
+  "KPIT TECHNOLOGIES LIMITED": { sector: "Information Technology" },
+  "JAYNECO":     { sector: "Metals & Mining" },
+  "JAYNECOIND":  { sector: "Metals & Mining" }
+};
+
+const MONTH_ABBR = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+const MONTH_NAMES_BY_IDX = Object.keys(MONTH_ABBR).sort((a,b)=> MONTH_ABBR[a]-MONTH_ABBR[b]);
+function monthSortKey(m){
+  const parts = String(m).trim().split(/\s+/);
+  const idx = MONTH_ABBR[String(parts[0]).slice(0,3).replace(/^./, c => c.toUpperCase()).replace(/(.)(.*)/, (_,a,b) => a + b.toLowerCase())];
+  const year = parseInt(parts[1],10) || 0;
+  return year*12 + (idx==null?0:idx);
+}
+
+function istNowDate(){ return new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })); }
+function todayISO(){
+  const d = istNowDate();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+/* "2026-09-15" -> "Sep 2026". Ye single source of truth hai ki koi pick
+   kis month mein "Added" ya "Removed" dikhega — hamesha real date se
+   nikalta hai, kisi alag se chuni hui "month" field se nahi. Isi wajah se
+   admin ab kabhi galat month select hi nahi kar sakti — bas sahi date
+   daalni hai. */
+function monthLabelFromDate(dateStr){
+  if(!dateStr) return null;
+  const m = /^(\d{4})-(\d{2})/.exec(String(dateStr));
+  if(!m) return null;
+  const year = parseInt(m[1],10), idx = parseInt(m[2],10) - 1;
+  const name = MONTH_NAMES_BY_IDX[idx];
+  return name ? (name + ' ' + year) : null;
+}
+
+/* allMonths ab kabhi manually add/persist nahi hoti — hamesha picks ke
+   real dateAdded/dateRemoved se (plus current month, taaki dropdown kabhi
+   khaali na ho) taaza calculate hoti hai. */
+let allMonths = [];
+function recomputeAllMonths(){
+  const set = new Set();
+  picks.forEach(s => {
+    const am = monthLabelFromDate(s.dateAdded); if(am) set.add(am);
+    if(s.action !== 'Added'){ const rm = monthLabelFromDate(s.dateRemoved); if(rm) set.add(rm); }
+  });
+  const cur = monthLabelFromDate(todayISO()); if(cur) set.add(cur);
+  allMonths = Array.from(set).sort((a,b)=> monthSortKey(a)-monthSortKey(b));
+  return allMonths;
+}
+
+/* Which month should open by default: today's month if we publish it,
+   otherwise the most recent one on the list. */
+function defaultMonth(){
+  if(!allMonths.length) return '';
+  const now = istNowDate();
+  const key = now.getFullYear() * 12 + now.getMonth();
+  const thisMonth = allMonths.find(m => monthSortKey(m) === key);
+  return thisMonth || allMonths[allMonths.length - 1];
+}
+
+const MONTH_KEY = 'analystedge_sel_month';
+/* Month list ab hamesha recomputeAllMonths() se taaza aati hai (picks ki
+   real dates se) — isliye admin ke liye alag se "Month" ya "Booked in
+   Month" field select karne ki zaroorat hi nahi rahi, aur "Add Month"
+   button bhi hata diya gaya hai: jaise hi kisi pick ki Date Added/Removed
+   kisi naye month mein padti hai, wo month dropdown mein khud aa jaata hai. */
+function populateMonthSelects(){
+  recomputeAllMonths();
+  const monthSel = document.getElementById('monthSelect');
+  // Remembered month ko pehli preference — page load par dropdown mein
+  // purane hardcoded options hote hain, jinki wajah se selection reset ho
+  // jaati thi.
+  const remembered = LS.get(MONTH_KEY) || '';
+  const useRemembered = remembered && allMonths.includes(remembered);
+  const prevMain = useRemembered ? remembered : monthSel.value;
+  const optsHtml = allMonths.map(m=>`<option value="${escAttr(m)}">${escHtml(m)}</option>`).join('');
+  monthSel.innerHTML = optsHtml;
+  monthSel.value = allMonths.includes(prevMain) ? prevMain : defaultMonth();
+  const repSel = document.getElementById('repMonth');
+  if(repSel){
+    const prevRep = repSel.value;
+    repSel.innerHTML = optsHtml;
+    repSel.value = allMonths.includes(prevRep) ? prevRep : (monthSel.value || defaultMonth());
+    renderRepStatus();
+  }
+  if(monthSel.value) LS.set(MONTH_KEY, monthSel.value);
+}
+
+/* "Sep 2026" -> "2026-09-01" — sirf legacy migration ke liye chahiye. */
+function monthLabelToFirstDate(label){
+  const parts = String(label||'').trim().split(/\s+/);
+  const idx = MONTH_ABBR[String(parts[0]).slice(0,3).replace(/^./, c=>c.toUpperCase()).replace(/(.)(.*)/, (_,a,b)=>a+b.toLowerCase())];
+  const year = parseInt(parts[1],10);
+  if(idx==null || !year) return null;
+  return year + '-' + String(idx+1).padStart(2,'0') + '-01';
+}
+
+/* Backward-compat safety net: purana data shape tha {"Jul 2026":[...], ...}
+   (month-keyed, plus har Removed pick par ek alag "bookedMonth" field).
+   Naya shape ek flat array hai jahan har pick ki apni real dateAdded/
+   dateRemoved hoti hai. Ye function purane shape ko naye mein convert
+   karta hai — kabhi bhi purana data mil jaaye (is browser ka localStorage
+   ho ya GitHub par abhi tak purani data.json), dashboard tootne ke bajaye
+   khud sambhal leta hai. */
+function migrateLegacyMonthsData(obj){
+  const out = [];
+  if(!obj || typeof obj !== 'object' || Array.isArray(obj)) return out;
+  Object.keys(obj).forEach(month => {
+    (obj[month] || []).forEach(s => {
+      const isRemoved = s.action !== 'Added';
+      const dateAdded = s.dateAdded || monthLabelToFirstDate(month);
+      let dateRemoved = null;
+      if(isRemoved){
+        dateRemoved = s.dateRemoved || monthLabelToFirstDate(s.bookedMonth || month);
+      }
+      const clean = Object.assign({}, s, { dateAdded, dateRemoved });
+      delete clean.bookedMonth;
+      out.push(clean);
+    });
+  });
+  return applyKnownCorrections(out);
+}
+
+/* Known corrections: kabhi GitHub par abhi bhi PURANI data.json pड़ी ho
+   (naya code deploy ho gaya par data.json update nahi hua), toh migration
+   in specific picks ko galat month par daal deta hai. Ye chhoti list un
+   picks ko hamesha sahi date par force karti hai, chahe source data kuch
+   bhi ho — taaki dashboard kabhi bhi (local file ho ya live GitHub se)
+   ye galat "Booked in wrong month" symptom dobara na dikhaye.
+   Jab GitHub par sahi data.json publish ho jaaye, ye list hata sakte hain. */
+const KNOWN_CORRECTIONS = [
+  { ticker: 'KPIT TECH', dateRemoved: '2026-09-01' },
+  { ticker: 'KTKBANK', dateRemoved: '2026-09-01' }
+];
+function applyKnownCorrections(arr){
+  if(!Array.isArray(arr)) return arr;
+  arr.forEach(p => {
+    const fix = KNOWN_CORRECTIONS.find(k => k.ticker === p.ticker);
+    if(fix && p.action !== 'Added'){
+      p.dateRemoved = fix.dateRemoved;
+    }
+  });
+  return arr;
+}
+
+function saveData(){
+  try{ LS.set('analystedge_data', JSON.stringify(picks)); }
+  catch(e){ console.error('Save failed', e); }
+}
+
+const DATA_RESET_VERSION = 'flat-picks-2026-09-04';
+
+function loadData(){
+  // One-time forced reset: wipes any previously saved picks/months/library
+  // sitting in this browser's localStorage so stale data from before this
+  // format change can't resurface after a fresh start. Runs once per
+  // version bump above.
+  try{
+    if(LS.get('analystedge_reset_version') !== DATA_RESET_VERSION){
+      LS.del('analystedge_data');
+      LS.del('analystedge_months');
+      LS.del('analystedge_library');
+      LS.set('analystedge_reset_version', DATA_RESET_VERSION);
+    }
+  }catch(e){ /* ignore */ }
+  try{
+    const raw = LS.get('analystedge_data');
+    if(raw){
+      const parsed = JSON.parse(raw);
+      picks = Array.isArray(parsed) ? applyKnownCorrections(parsed) : migrateLegacyMonthsData(parsed);
+    }
+  }catch(e){ /* nothing saved yet, defaults will be used */ }
+  populateMonthSelects();
+  loadLibrary();
+  populateReuseSelect();
+  renderPerfChart();
+  renderTable();
+}
+
+/* ============================================================
+   KEY VAULT  —  GitHub token ko admin password se encrypt karke
+   repo mein `key.enc` naam se rakha jaata hai (AES-GCM 256,
+   PBKDF2-SHA256 210k iterations).
+
+   Isse employees ko sirf PASSWORD chahiye — access key kabhi nahi.
+   Token plain form mein file ke andar kahin nahi hai, so public
+   link kholne wale kisi bhi visitor ke liye bekaar hai.
+
+   Password badalna = key.enc ko naye password se dobara encrypt
+   karna. Purana password usi waqt kaam karna band kar deta hai.
+   ============================================================ */
+const KEY_FILE = 'key.enc';
+const PBKDF2_ROUNDS = 210000;
+
+function b64(buf){
+  const bytes = new Uint8Array(buf); let bin = '';
+  for(let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+function unb64(str){
+  const bin = atob(str); const out = new Uint8Array(bin.length);
+  for(let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+function cryptoOk(){
+  return typeof crypto !== 'undefined' && crypto.subtle &&
+         crypto.subtle.importKey && crypto.subtle.encrypt && crypto.getRandomValues;
+}
+async function deriveKey(password, salt){
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name:'PBKDF2', salt: salt, iterations: PBKDF2_ROUNDS, hash:'SHA-256' },
+    base, { name:'AES-GCM', length:256 }, false, ['encrypt','decrypt']);
+}
+async function encryptToken(password, token){
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv   = crypto.getRandomValues(new Uint8Array(12));
+  const key  = await deriveKey(password, salt);
+  const pt   = new TextEncoder().encode(JSON.stringify({ token: token, check: 'analystedge' }));
+  const ct   = await crypto.subtle.encrypt({ name:'AES-GCM', iv: iv }, key, pt);
+  return { v:1, salt: b64(salt), iv: b64(iv), ct: b64(ct) };
+}
+async function decryptToken(password, blob){
+  const key = await deriveKey(password, unb64(blob.salt));
+  const pt  = await crypto.subtle.decrypt({ name:'AES-GCM', iv: unb64(blob.iv) }, key, unb64(blob.ct));
+  const obj = JSON.parse(new TextDecoder().decode(pt));
+  if(!obj || obj.check !== 'analystedge' || !obj.token) throw new Error('bad payload');
+  return obj.token;
+}
+
+/* key.enc padhna — data.json jaisa hi fallback (live site / local file). */
+async function fetchKeyBlob(){
+  const bases = ON_LIVE_SITE
+    ? [KEY_FILE, 'https://raw.githubusercontent.com/' + GH_OWNER + '/' + GH_REPO + '/' + GH_BRANCH + '/' + KEY_FILE]
+    : ['https://raw.githubusercontent.com/' + GH_OWNER + '/' + GH_REPO + '/' + GH_BRANCH + '/' + KEY_FILE, KEY_FILE];
+  for(const b of bases){
+    try{
+      const res = await fetch(b + '?v=' + Date.now(), { cache:'no-store' });
+      if(!res.ok) continue;
+      const j = await res.json();
+      if(j && j.salt && j.iv && j.ct) return j;
+    }catch(e){ /* agla try */ }
+  }
+  return null;
+}
+
+/* key.enc ko repo mein likhna — sirf owner ke setup / password change par. */
+async function putKeyBlob(blob, token){
+  const st = { owner: GH_OWNER, repo: GH_REPO, branch: GH_BRANCH, token: token };
+  let sha = null;
+  try{
+    const r = await fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/?ref=' + encodeURIComponent(GH_BRANCH),
+      { headers:{ 'Authorization':'Bearer ' + token, 'Accept':'application/vnd.github+json' } });
+    if(r.ok){ const list = await r.json(); const f = Array.isArray(list) && list.find(x => x.name === KEY_FILE); if(f) sha = f.sha; }
+  }catch(e){ /* nayi file hogi */ }
+  const body = { message: 'Update admin key vault', content: toBase64Unicode(JSON.stringify(blob)), branch: GH_BRANCH };
+  if(sha) body.sha = sha;
+  const res = await fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + KEY_FILE, {
+    method:'PUT',
+    headers:{ 'Authorization':'Bearer ' + token, 'Accept':'application/vnd.github+json', 'Content-Type':'application/json' },
+    body: JSON.stringify(body)
+  });
+  if(!res.ok){
+    const err = await res.json().catch(()=>({}));
+    throw new Error(err.message || ('HTTP ' + res.status));
+  }
+}
+
+const ADMIN_PW_HASH = 'a55a5ca9c9a9287bd82e89a33270514eaf89777485b36a77710db3e77d17c5b4';
+let ADMIN_UNLOCKED = false;
+let ADMIN_PW_CACHE = '';
+
+/* SHA-256. crypto.subtle sirf HTTPS/localhost par milta hai — agar file
+   local file:// se khuli ho to niche wala pure-JS fallback chalta hai,
+   taaki password har jagah kaam kare. */
+function sha256Fallback(ascii){
+  function rr(n,x){ return (n>>>x)|(n<<(32-x)); }
+  const K=[], H=[], primes=[];
+  let n=2;
+  while(primes.length<64){
+    let isP=true;
+    for(let f=2;f*f<=n;f++) if(n%f===0){ isP=false; break; }
+    if(isP) primes.push(n);
+    n++;
+  }
+  for(let i=0;i<64;i++) K[i]=(Math.pow(primes[i],1/3)%1*Math.pow(2,32))|0;
+  for(let i=0;i<8;i++)  H[i]=(Math.pow(primes[i],1/2)%1*Math.pow(2,32))|0;
+
+  const utf8 = unescape(encodeURIComponent(ascii));
+  const bytes = [];
+  for(let i=0;i<utf8.length;i++) bytes.push(utf8.charCodeAt(i)&0xff);
+  const bitLen = bytes.length*8;
+  bytes.push(0x80);
+  while(bytes.length%64 !== 56) bytes.push(0);
+  const hi = Math.floor(bitLen/0x100000000), lo = bitLen>>>0;
+  bytes.push((hi>>>24)&255,(hi>>>16)&255,(hi>>>8)&255,hi&255);
+  bytes.push((lo>>>24)&255,(lo>>>16)&255,(lo>>>8)&255,lo&255);
+
+  const w = new Array(64);
+  for(let i=0;i<bytes.length;i+=64){
+    for(let t=0;t<16;t++){
+      w[t] = (bytes[i+t*4]<<24)|(bytes[i+t*4+1]<<16)|(bytes[i+t*4+2]<<8)|bytes[i+t*4+3];
+    }
+    for(let t=16;t<64;t++){
+      const s0 = rr(w[t-15],7)^rr(w[t-15],18)^(w[t-15]>>>3);
+      const s1 = rr(w[t-2],17)^rr(w[t-2],19)^(w[t-2]>>>10);
+      w[t] = (w[t-16]+s0+w[t-7]+s1)|0;
+    }
+    let [a,b,c,d,e,f,g,h] = H;
+    for(let t=0;t<64;t++){
+      const S1 = rr(e,6)^rr(e,11)^rr(e,25);
+      const ch = (e&f)^(~e&g);
+      const t1 = (h+S1+ch+K[t]+w[t])|0;
+      const S0 = rr(a,2)^rr(a,13)^rr(a,22);
+      const mj = (a&b)^(a&c)^(b&c);
+      const t2 = (S0+mj)|0;
+      h=g; g=f; f=e; e=(d+t1)|0; d=c; c=b; b=a; a=(t1+t2)|0;
+    }
+    const add=[a,b,c,d,e,f,g,h];
+    for(let x=0;x<8;x++) H[x]=(H[x]+add[x])|0;
+  }
+  return H.map(x=>((x>>>0).toString(16).padStart(8,'0'))).join('');
+}
+
+async function sha256Hex(str){
+  try{
+    if(typeof crypto !== 'undefined' && crypto.subtle && crypto.subtle.digest){
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    }
+  }catch(e){ /* fall through to the pure-JS path below */ }
+  return sha256Fallback(str);
+}
+
+/* Admin nav item stays hidden for clients. It appears only when the page is
+   opened with #admin in the URL, or Ctrl+Shift+A is pressed, or the session
+   is already unlocked. Clients who just open the plain link never see it. */
+/* Lock button hamesha dikhta hai. Unlock hone par green ho jaata hai. */
+function revealAdminNav(){ paintLock(); }
+function paintLock(){
+  const b = document.getElementById('lockBtn');
+  const sh = document.getElementById('lockShackle');
+  if(!b) return;
+  if(ADMIN_UNLOCKED){
+    b.classList.add('unlocked');
+    b.title = 'Admin open — click to lock';
+    if(sh) sh.setAttribute('d', 'M8 10.5V7a4 4 0 0 1 7.5-2');   // khula hua taala
+  }else{
+    b.classList.remove('unlocked');
+    b.title = 'Admin';
+    if(sh) sh.setAttribute('d', 'M8 10.5V7a4 4 0 0 1 8 0v3.5');
+  }
+}
+function maybeRevealAdmin(){
+  if(LS.get('analystedge_admin_unlocked') === 'yes') ADMIN_UNLOCKED = true;
+  paintLock();
+}
+document.addEventListener('keydown', function(e){
+  if(e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')){
+    e.preventDefault();
+    revealAdminNav();
+    openAdmin();
+  }
+});
+
+function checkAdminUnlocked(){
+  return new Promise(function(resolve){
+    if(ADMIN_UNLOCKED || LS.get('analystedge_admin_unlocked') === 'yes'){
+      ADMIN_UNLOCKED = true; paintLock();
+      return resolve(true);
+    }
+    const ov = document.getElementById('pwOverlay');
+    const inp = document.getElementById('pwInput');
+    const err = document.getElementById('pwError');
+    const go = document.getElementById('pwGo');
+    const cancel = document.getElementById('pwCancel');
+    err.textContent = ''; err.style.color = 'var(--neg)'; inp.value = '';
+    ov.style.display = 'flex';
+    setTimeout(()=> inp.focus(), 60);
+
+    function close(val){
+      ov.style.display = 'none';
+      go.onclick = null; cancel.onclick = null; inp.onkeydown = null;
+      resolve(val);
+    }
+    function accept(pw){
+      LS.set('analystedge_admin_unlocked', 'yes');
+      if(pw) ADMIN_PW_CACHE = pw;
+      ADMIN_UNLOCKED = true;
+      paintLock();
+      close(true);
+    }
+    async function submit(){
+      const pw = inp.value;
+      if(!pw){ err.textContent = 'Password daalein.'; return; }
+      go.disabled = true;
+      err.style.color = 'var(--ink-soft)';
+      err.textContent = 'Checking…';
+
+      // 1) Vault se token nikaalne ki koshish — employees ka normal raasta
+      if(cryptoOk()){
+        try{
+          const blob = await fetchKeyBlob();
+          if(blob){
+            const tok = await decryptToken(pw, blob);
+            setToken(tok);              // access key kabhi maangi hi nahi jayegi
+            go.disabled = false;
+            return accept(pw);
+          }
+        }catch(e){
+          go.disabled = false;
+          err.style.color = 'var(--neg)';
+          err.textContent = 'Galat password. Dobara koshish karein.';
+          inp.value = ''; inp.focus();
+          return;
+        }
+      }
+
+      // 2) Vault abhi bana hi nahi — bootstrap password se andar aao
+      let hash = null;
+      try{ hash = await sha256Hex(pw); }catch(e){ hash = null; }
+      go.disabled = false;
+      if(hash !== ADMIN_PW_HASH){
+        err.style.color = 'var(--neg)';
+        err.textContent = 'Galat password. Dobara koshish karein.';
+        inp.value = ''; inp.focus();
+        return;
+      }
+      accept(pw);
+    }
+    go.onclick = submit;
+    cancel.onclick = function(){ close(false); };
+    inp.onkeydown = function(e){ if(e.key === 'Enter') submit(); };
+  });
+}
+
+/* Password badlo — vault ko naye password se dobara seal karta hai.
+   Purana password usi second se bekaar. */
+function changePassword(){
+  const ov = document.getElementById('cpOverlay');
+  const a = document.getElementById('cpNew1'), b = document.getElementById('cpNew2');
+  const err = document.getElementById('cpError');
+  const go = document.getElementById('cpGo'), cancel = document.getElementById('cpCancel');
+  a.value = ''; b.value = ''; err.textContent = ''; err.style.color = 'var(--neg)';
+  ov.style.display = 'flex';
+  setTimeout(()=> a.focus(), 60);
+  function close(){ ov.style.display = 'none'; go.onclick = null; cancel.onclick = null; }
+  go.onclick = async function(){
+    if(!cryptoOk()){ err.textContent = 'Ye feature https link par hi chalta hai.'; return; }
+    if(a.value.length < 6){ err.textContent = 'Kam se kam 6 characters rakhein.'; return; }
+    if(a.value !== b.value){ err.textContent = 'Dono password alag hain.'; return; }
+    const tok = getToken();
+    if(!tok){ err.textContent = 'Pehle admin unlock karein.'; return; }
+    go.disabled = true; err.style.color = 'var(--ink-soft)'; err.textContent = 'Updating…';
+    try{
+      await putKeyBlob(await encryptToken(a.value, tok), tok);
+      ADMIN_PW_CACHE = a.value;
+      go.disabled = false;
+      close();
+      alert('Password badal gaya. Team ko naya password bata dein — purana ab kaam nahi karega.');
+    }catch(e){
+      go.disabled = false;
+      err.style.color = 'var(--neg)';
+      err.textContent = 'Fail: ' + e.message;
+    }
+  };
+  cancel.onclick = close;
+}
+
+/* Shared computer par kaam khatam — sab kuch bhool jao. */
+function lockAdmin(){
+  if(DIRTY && !confirm('Abhi kuch save pending hai. Phir bhi lock karein?')) return;
+  ADMIN_UNLOCKED = false;
+  ADMIN_PW_CACHE = '';
+  LS.del('analystedge_admin_unlocked');
+  LS.del(GH_SETTINGS_KEY);
+  paintLock();
+  renderReportBar(document.getElementById('monthSelect').value);
+  showOverview();
+}
+
+async function openAdmin(){
+  const ok = await checkAdminUnlocked();
+  if(!ok) return;
+  document.getElementById('overview-view').style.display='none';
+  document.getElementById('detail-view').style.display='none';
+  var opv = document.getElementById('openpos-view'); if(opv) opv.style.display='none';
+  document.getElementById('admin-view').style.display='block';
+  paintLock();
+  document.getElementById('navDashboard').classList.remove('active');
+  document.getElementById('navOpenPos').classList.remove('active');
+  renderAdminList();
+  populateReuseSelect();
+  renderStock20();
+  refreshConn();
+  renderReportBar(document.getElementById('monthSelect').value);
+  if(!getToken()) askForToken(false);
+  if(editingIndex === null){
+    const dateField = document.getElementById('admDate');
+    if(dateField && !dateField.value) dateField.value = new Date().toISOString().slice(0,10);
+  }
+  window.scrollTo(0,0);
+}
+
+/* Aakhiri raasta: is browser ki saari saved state saaf karke online se
+   sab dobara le aao. Server par kuch nahi badalta. */
+function hardReload(){
+  try{
+    LS.del(DIRTY_KEY); LS.del(SEEN_KEY); LS.del(MONTH_KEY);
+    LS.del('analystedge_data'); LS.del('analystedge_months'); LS.del('analystedge_library');
+  }catch(e){}
+  DIRTY = false; dirtyVisible = false; LAST_SAVE_ERROR = '';
+  picks = []; loadRetries = 0; SYNC_READY = false;
+  updateDirtyBanner();
+  setSyncStatus('Loading…', false);
+  fetchRemoteData(true);
+}
+
+function renderRepStatus(){
+  const sel = document.getElementById('repMonth');
+  const out = document.getElementById('repStatus');
+  if(!sel || !out) return;
+  const rep = monthReports[sel.value];
+  if(rep && rep.data){
+    const kb = Math.round(String(rep.data).length * 0.75 / 1024);
+    out.style.color = 'var(--pos)';
+    out.textContent = '✅ ' + (rep.name || 'Report') + ' — ' + kb + ' KB. Client ko peele bar mein dikh rahi hai.';
+  }else{
+    out.style.color = 'var(--ink-soft)';
+    out.textContent = 'Is month ke liye abhi koi report upload nahi hui.';
+  }
+}
+
+function handleReportFile(file){
+  const sel = document.getElementById('repMonth');
+  const out = document.getElementById('repStatus');
+  const month = sel && sel.value;
+  if(!month){ alert('Pehle month chuniye.'); return; }
+  if(file.size > 9 * 1024 * 1024){
+    out.style.color = 'var(--neg)';
+    out.textContent = '❌ File 9 MB se badi hai. Chhoti file use karein.';
+    return;
+  }
+  out.style.color = 'var(--ink-soft)';
+  out.textContent = 'Reading…';
+  const fr = new FileReader();
+  fr.onload = function(){
+    monthReports[month] = { name: file.name, data: fr.result, at: new Date().toISOString() };
+    saveReports();
+    renderRepStatus();
+    renderReportBar(document.getElementById('monthSelect').value);
+    scheduleAutoSave();
+  };
+  fr.onerror = function(){
+    out.style.color = 'var(--neg)';
+    out.textContent = '❌ File padhi nahi ja saki.';
+  };
+  fr.readAsDataURL(file);
+}
+
+function removeMonthReport(){
+  const sel = document.getElementById('repMonth');
+  const month = sel && sel.value;
+  if(!month || !monthReports[month]){ alert('Is month ki koi report hai hi nahi.'); return; }
+  if(!confirm(month + ' ki research report hata dein?')) return;
+  delete monthReports[month];
+  saveReports();
+  renderRepStatus();
+  renderReportBar(document.getElementById('monthSelect').value);
+  scheduleAutoSave();
+}
+
+/* Ek month ki list banao:
+   - us month mein KHAREEDE gaye stocks (Date Added ka month = ye month)
+   - PLUS kisi bhi doosre month ke stocks jo IS month mein BOOK huye
+     (Date Removed ka month = ye month)
+   BUG FIX (2026-09-04): pehle admin ko "Booked in Month" alag se manually
+   chunna padta tha — jo galat month set ho jaana asaan bana deta tha
+   (dekho purani syncBookedMonthField() ki history). Ab koi manual month
+   field hai hi nahi: dono months (Added / Booked) hamesha Date Added aur
+   Date Removed se seedhe calculate hote hain, isliye galat month set hona
+   ab structurally possible nahi hai. */
+function rowsForMonth(month){
+  const out = [];
+  picks.forEach((s, i) => {
+    const addedMonth = monthLabelFromDate(s.dateAdded);
+    const isBooked = s.action !== 'Added';
+    const bookedMonth = isBooked ? (monthLabelFromDate(s.dateRemoved) || addedMonth) : null;
+    if(addedMonth === month){
+      // isi month ka pick. Agar isi month book bhi hua to ek hi row (Booked).
+      out.push(Object.assign({}, s, { _i: i,
+        _view: (isBooked && bookedMonth === month) ? 'Booked' : 'Added' }));
+    }else if(isBooked && bookedMonth === month){
+      // doosre month ka pick, book IS month mein hua
+      out.push(Object.assign({}, s, { _i: i, _view: 'Booked', _from: addedMonth }));
+    }
+  });
+  return out;
+}
+
+function renderReportBar(month){
+  const bar = document.getElementById('reportBar');
+  if(!bar) return;
+  const rep = month ? monthReports[month] : null;
+
+  if(rep && rep.data){
+    bar.style.display = 'flex';
+    bar.classList.remove('rb-empty');
+    bar.querySelector('.rb-ico').textContent = '📄';
+    bar.querySelector('.rb-txt').textContent = rep.name || ('Research Report — ' + month);
+    bar.querySelector('.rb-open').textContent = 'Open';
+    return;
+  }
+
+  // Report nahi hai: client ko khaali bar dikhana bura lagega, isliye
+  // sirf admin ko ek halka placeholder dikhta hai.
+  if(ADMIN_UNLOCKED){
+    bar.style.display = 'flex';
+    bar.classList.add('rb-empty');
+    bar.querySelector('.rb-ico').textContent = '📎';
+    bar.querySelector('.rb-txt').textContent = month
+      ? ('Research report — ' + month + ' ke liye abhi upload nahi hui')
+      : 'Research report';
+    bar.querySelector('.rb-open').textContent = 'Upload';
+  }else{
+    bar.style.display = 'none';
+  }
+}
+
+async function openMonthReport(e){
+  if(e) e.preventDefault();
+  const month = document.getElementById('monthSelect').value;
+  const rep = monthReports[month];
+  if(!rep || !rep.data){
+    // Admin ke liye ye shortcut hai: seedha upload box tak le jao
+    await openAdmin();
+    if(!ADMIN_UNLOCKED) return;
+    const sel = document.getElementById('repMonth');
+    if(sel && month){ sel.value = month; renderRepStatus(); }
+    const box = document.getElementById('repMonth');
+    if(box && box.scrollIntoView) box.scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+  try{
+    const parts = String(rep.data).split(',');
+    const mime = (parts[0].match(/:(.*?);/) || [])[1] || 'application/pdf';
+    const bin = atob(parts[1] || '');
+    const arr = new Uint8Array(bin.length);
+    for(let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    const url = URL.createObjectURL(new Blob([arr], { type: mime }));
+    window.open(url, '_blank');
+  }catch(err){ alert('Report khul nahi payi: ' + err.message); }
+}
+
+/* Action = Booked hote hi "Date Removed / Exited" field khulta hai.
+   Ab yahan koi month chunna hi nahi padta — bas ek real date, jisse
+   "kis month mein Booked dikhega" khud-ba-khud (rowsForMonth) calculate
+   ho jaata hai. Default: aaj ki date. */
+function syncRemovedDateField(){
+  const act = document.getElementById('admAction');
+  const wrap = document.getElementById('admBookedMonthWrap');
+  const sel = document.getElementById('admDateRemoved');
+  if(!act || !wrap || !sel) return;
+  const isBooked = act.value !== 'Added';
+  wrap.style.display = isBooked ? 'block' : 'none';
+  if(isBooked && !sel.value) sel.value = todayISO();
+}
+
+function rememberMonth(m){ if(m && String(m).trim()) LS.set(MONTH_KEY, m); }
+
+/* Admin ki "Existing Picks" list ab month se group nahi hoti — sabse
+   naya pick sabse upar, flat list. Har row apni Added/Removed dates
+   khud dikhati hai, isliye kisi month-filter ki zaroorat nahi. */
+function renderAdminList(){
+  const order = picks.map((s,i)=>({s,i})).sort((a,b)=> (b.s.dateAdded||'').localeCompare(a.s.dateAdded||''));
+  document.getElementById('admList').innerHTML = order.map(({s,i})=>`
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border);">
+      <div>
+        <div style="font-weight:700; font-size:17px;">${escHtml(s.name)} <span style="color:var(--ink-soft); font-family:var(--font-mono); font-size:14px;">${escHtml(s.ticker)}</span></div>
+        <div style="font-size:14.5px; color:var(--ink-soft);">₹${s.priceAdded} → ₹${s.currentPrice} · ${s.action==='Added'?'Added':'Booked'} · Added ${fmtDate(s.dateAdded)}${s.action!=='Added' ? (' · Booked ' + fmtDate(s.dateRemoved)) : ''}${s.researchPdf ? ' · 📄 PDF attached' : ''}</div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button data-action="edit-pick" data-index="${i}" style="background:var(--surface-2); border:1px solid var(--border); color:var(--ink); padding:6px 12px; border-radius:7px; font-size:15px; cursor:pointer;">Edit</button>
+        <button data-action="delete-pick" data-index="${i}" style="background:var(--neg-bg); border:1px solid var(--neg); color:var(--neg); padding:6px 12px; border-radius:7px; font-size:15px; cursor:pointer;">Delete</button>
+      </div>
+    </div>`).join('') || `<div style="color:var(--ink-soft); font-size:16.5px; padding:10px 0;">No picks yet.</div>`;
+}
+
+function editStock(index){
+  const s = picks[index];
+  editingIndex = index;
+  document.getElementById('admAction').value = s.action;
+  const bmS = document.getElementById('admDateRemoved');
+  if(bmS) bmS.value = (s.action !== 'Added') ? (s.dateRemoved || '') : '';
+  syncRemovedDateField();
+  document.getElementById('admName').value = s.name;
+  document.getElementById('admTicker').value = s.ticker;
+  document.getElementById('admSector').value = s.sector || '';
+  document.getElementById('admPrice').value = s.priceAdded;
+  document.getElementById('admCurrent').value = s.currentPrice;
+  document.getElementById('admDate').value = s.dateAdded || '';
+  lockAddedFields(true);
+  document.getElementById('admRationale').value = s.rationale;
+  document.getElementById('admSubmitBtn').textContent = 'Update Pick';
+  document.getElementById('admCancelBtn').style.display = 'inline-block';
+  document.getElementById('admResearchFile').value = '';
+  pendingResearchPdf = s.researchPdf || null;
+  const rstatus = document.getElementById('admResearchStatus');
+  rstatus.style.color = 'var(--ink-soft)';
+  rstatus.textContent = s.researchPdf ? 'An existing research PDF is attached (choose a new file to replace it).' : 'No research PDF for this yet.';
+  resetShotUI();
+  window.scrollTo(0,0);
+}
+
+/* Edit mode mein Recommended Price aur Recommended Date field ko
+   greyed-out/read-only kar deta hai — ye values ek baar add hone ke
+   baad fix rehti hain, dubara poochhi/badli nahi jaati. Sirf naya
+   stock add karte time (editingIndex === null) ye fields khuli
+   rehti hain. */
+function lockAddedFields(locked){
+  ['admPrice','admDate'].forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.readOnly = locked;
+    el.style.background = locked ? 'var(--surface)' : 'var(--surface-2)';
+    el.style.opacity = locked ? '0.65' : '1';
+    el.style.cursor = locked ? 'not-allowed' : '';
+    el.title = locked ? 'Fixed — ek baar add hone ke baad ye badla nahi jaata.' : '';
+  });
+}
+
+function cancelEdit(){
+  editingIndex = null;
+  document.getElementById('admName').value='';
+  document.getElementById('admTicker').value='';
+  document.getElementById('admSector').value='';
+  document.getElementById('admPrice').value='';
+  document.getElementById('admCurrent').value='';
+  lockAddedFields(false);
+  const bmC = document.getElementById('admDateRemoved'); if(bmC) bmC.value='';
+  syncRemovedDateField();
+  document.getElementById('admDate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('admRationale').value='';
+  document.getElementById('admResearchFile').value='';
+  document.getElementById('admResearchStatus').textContent='';
+  pendingResearchPdf = null;
+  resetShotUI();
+  document.getElementById('admSubmitBtn').textContent = 'Add to Dashboard';
+  document.getElementById('admCancelBtn').style.display = 'none';
+}
+
+function deleteStock(index){
+  if(!confirm('Delete this pick?\n\nThe data will NOT be deleted from history — the full record (indicators, chart, summary) stays safe. You can add it back any time in one click via "Reuse From History".')) return;
+  picks.splice(index,1);
+  saveData();
+  populateMonthSelects();
+  renderTable();
+  renderOpenPositions();
+  renderAdminList();
+  scheduleAutoSave();
+}
+
+function addStock(){
+  const name = document.getElementById('admName').value.trim();
+  const ticker = document.getElementById('admTicker').value.trim().toUpperCase();
+  const sector = document.getElementById('admSector').value.trim() || 'General';
+  const existingForEdit = (editingIndex !== null) ? picks[editingIndex] : null;
+  // Ek baar add ho chuki stock ki Recommended Price aur Recommended Date
+  // ab kabhi dubara nahi poochhi/badli jaati — chahe form field mein
+  // kuch bhi dikhe, edit ke time ye hamesha ORIGINAL value se hi liye
+  // jaate hain. Booking ke time sirf Booked Price aur Date Removed
+  // manually daale jaate hain.
+  const priceAdded = existingForEdit ? existingForEdit.priceAdded : (parseFloat(document.getElementById('admPrice').value) || 0);
+  const currentPrice = parseFloat(document.getElementById('admCurrent').value) || priceAdded;
+  const action = document.getElementById('admAction').value;
+  const dateAdded = existingForEdit ? (existingForEdit.dateAdded || todayISO()) : ((document.getElementById('admDate').value || '').trim() || todayISO());
+  const dateRemovedSel = document.getElementById('admDateRemoved');
+  // Booked hai to exit ki real date yaad rakho; warna field saaf. Ye date
+  // hi decide karti hai ki pick kis month mein "Booked" dikhega — koi
+  // alag se month chunna nahi padta.
+  const dateRemoved = (action !== 'Added') ? ((dateRemovedSel && dateRemovedSel.value) || todayISO()) : null;
+  const rationale = document.getElementById('admRationale').value.trim() || 'Research pending — details will be updated.';
+
+  if(!name || !ticker || !priceAdded){
+    document.getElementById('admStatus').style.color='var(--neg)';
+    document.getElementById('admStatus').textContent='Name, ticker, and price are required.';
+    return;
+  }
+
+  const returnPct = priceAdded ? ((currentPrice-priceAdded)/priceAdded*100) : 0;
+
+  // If this ticker matches a stock we already have full history for (either
+  // picked via the "Reuse From History" dropdown, or simply typed a ticker
+  // that already exists in the library), reuse its real indicators/chart/
+  // summary instead of generating placeholder data.
+  const reuse = stockLibrary[ticker] && (selectedLibTicker === ticker || stockLibrary[ticker]);
+  const lib = reuse ? stockLibrary[ticker] : null;
+
+  const chart = lib ? lib.chart : [priceAdded*0.94, priceAdded*0.97, priceAdded, priceAdded*1.02, priceAdded*1.05, priceAdded*1.03, currentPrice*0.99, currentPrice];
+  const indicators = lib ? lib.indicators : {"52W Range":"—","Market Cap":"—","P/E Ratio":"—","P/E (Fwd.)":"—","EPS Actual":"—","EPS Estimate":"—","PEG Ratio":"—","FCF Yield":"—","EV/EBITDA":"—","Beta (5Y)":"—","Div Yield":"—","Next Earnings":"—"};
+  const summary = lib ? (rationale || lib.summary) : rationale;
+  const upside = lib ? lib.upside : Number((returnPct*0.6).toFixed(1));
+  const fairPrice = lib ? lib.fairPrice : Number((currentPrice*1.12).toFixed(1));
+  const growth = lib ? lib.growth : 6.5;
+  const profitability = lib ? lib.profitability : 6.5;
+
+  let finalStock;
+  const addedMonthLabel = monthLabelFromDate(dateAdded) || '';
+  if(editingIndex !== null){
+    const existing = picks[editingIndex];
+    finalStock = { ...existing, ticker, name, sector, priceAdded, currentPrice, returnPct, action, dateRemoved, rationale, chart, summary, dateAdded, researchPdf: pendingResearchPdf ?? existing.researchPdf ?? null };
+    picks[editingIndex] = finalStock;
+    document.getElementById('admStatus').textContent = name + ' updated.';
+    cancelEdit();
+  } else {
+    finalStock = {
+      ticker, name, sector, priceAdded, currentPrice, returnPct, action, dateRemoved,
+      rationale, chart, indicators, summary, upside, fairPrice, growth, profitability,
+      dateAdded,
+      researchPdf: pendingResearchPdf || null
+    };
+    picks.unshift(finalStock);
+    document.getElementById('admStatus').textContent = name + (lib ? ' (from history) ' : ' ') + 'added to ' + addedMonthLabel + '. Data also saved to history.';
+    document.getElementById('admName').value='';
+    document.getElementById('admTicker').value='';
+    document.getElementById('admSector').value='';
+    document.getElementById('admPrice').value='';
+    document.getElementById('admCurrent').value='';
+    document.getElementById('admRationale').value='';
+    document.getElementById('admDate').value = new Date().toISOString().slice(0,10);
+    document.getElementById('admReuseSelect').value='';
+    document.getElementById('admResearchFile').value='';
+    document.getElementById('admResearchStatus').textContent='';
+    selectedLibTicker = null;
+    pendingResearchPdf = null;
+    resetShotUI();
+  }
+
+  // Always keep the permanent library up to date — this record now
+  // persists forever, independent of whether it's currently "Added" or
+  // "Removed".
+  upsertLibrary(finalStock);
+
+  document.getElementById('admStatus').style.color='var(--pos)';
+  saveData();
+  populateMonthSelects();
+  const finalMonth = monthLabelFromDate(finalStock.action !== 'Added' ? (finalStock.dateRemoved || finalStock.dateAdded) : finalStock.dateAdded);
+  if(finalMonth && allMonths.includes(finalMonth)) document.getElementById('monthSelect').value = finalMonth;
+  saveLibrary();
+  renderTable();
+  renderOpenPositions();
+  renderAdminList();
+  populateReuseSelect();
+  scheduleAutoSave();
+}
+
+function showOverview(){
+  document.getElementById('detail-view').style.display='none';
+  var av = document.getElementById('admin-view'); if(av) av.style.display='none';
+  document.getElementById('openpos-view').style.display='none';
+  document.getElementById('overview-view').style.display='block';
+  document.getElementById('navDashboard').classList.add('active');
+  document.getElementById('navOpenPos').classList.remove('active');
+
+  window.scrollTo(0,0);
+}
+
+/* ============================================================
+   ONLINE SYNC — pulls latest picks published by the admin panel.
+   data.json lives in the same GitHub repo as this page, so a
+   relative URL works on GitHub Pages. Every fetch is cache-busted
+   so clients always see the newest publish. If the network is
+   down or data.json doesn't exist yet, the dashboard silently
+   falls back to the last data cached in this browser.
+   ============================================================ */
+const REMOTE_DATA_URL = 'data.json';
+/* Agar file local (file://) se ya kisi doosre host se khuli hai to relative
+   'data.json' kaam nahi karega. Us case mein seedha GitHub se padhte hain.
+   raw.githubusercontent.com CORS allow karta hai, so ye file:// par bhi chalta hai. */
+const RAW_DATA_URL = 'https://raw.githubusercontent.com/RaDivyani/analystedge/main/data.json';
+const ON_LIVE_SITE = /(^|\.)github\.io$/.test(location.hostname);
+
+function dataUrlCandidates(){
+  return ON_LIVE_SITE ? [REMOTE_DATA_URL, RAW_DATA_URL] : [RAW_DATA_URL, REMOTE_DATA_URL];
+}
+
+async function fetchRemoteJson(){
+  let lastErr = null;
+  for(const base of dataUrlCandidates()){
+    try{
+      const res = await fetch(base + '?v=' + Date.now(), { cache: 'no-store' });
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      return await res.json();
+    }catch(e){ lastErr = e; }
+  }
+  throw lastErr || new Error('data.json not reachable');
+}
+const AUTO_REFRESH_MS = 5 * 60 * 1000; // every 5 minutes
+
+function setSyncStatus(msg, ok){
+  const el = document.getElementById('syncStatus');
+  if(!el) return;
+  el.style.color = ok ? 'var(--pos)' : 'var(--ink-soft)';
+  el.textContent = msg;
+}
+
+async function fetchRemoteData(manual){
+  // Unsaved changes hain? Toh remote data ko local ke upar likhna
+  // MANA hai — manual Refresh se bhi. Pehle save karne ki koshish.
+  if(DIRTY && haveLocalData()){
+    if(manual){ showDirtyBanner(); saveNow(); }
+    else updateDirtyBanner();
+    setSyncStatus('Save pending — refresh rok diya', false);
+    return;
+  }
+  if(DIRTY && !haveLocalData()){
+    // atka hua flag, bachane ko kuch nahi — saaf karo aur aage badho
+    clearDirty();
+  }
+  if(!manual && (autoPending || autoBusy)) return;
+  const btn = document.getElementById('refreshBtn');
+  const icon = document.getElementById('refreshIcon');
+  if(manual && btn){ btn.disabled = true; btn.style.opacity = '0.6'; }
+  if(icon){ icon.style.transition = 'transform 0.8s'; icon.style.transform = 'rotate(360deg)'; setTimeout(()=>{ icon.style.transition='none'; icon.style.transform='rotate(0deg)'; }, 850); }
+  try{
+    const remote = await fetchRemoteJson();
+    if(remote && remote.updatedAt && seenUpdated() && String(remote.updatedAt) < seenUpdated() && haveLocalData()){
+      // CDN ne purani copy di — apna data hi rakho.
+      // Local data authoritative hai, so saving allowed rehna chahiye
+      // (warna auto-save band ho jaata aur lockout ban jaata).
+      SYNC_READY = true;
+      loadRetries = 0;
+      refreshConn();
+      setSyncStatus('Server copy purani hai (CDN cache) — aapka data safe rakha', false);
+      return;
+    }
+    if(remote && (remote.picks || remote.data)){
+      noteUpdated(remote.updatedAt);
+      // remote.picks = naya flat format. remote.data (bina picks ke) =
+      // purana month-keyed format — backward-compat migration se convert
+      // kar lo, taaki deploy order (code pehle vs data.json pehle) kabhi
+      // dashboard na todein.
+      picks = Array.isArray(remote.picks) ? applyKnownCorrections(remote.picks) : migrateLegacyMonthsData(remote.data || {});
+      stockLibrary = remote.library || stockLibrary || {};
+      if(remote.reports && typeof remote.reports === 'object'){
+        monthReports = remote.reports;
+        saveReports();
+      }
+      if(Array.isArray(remote.stock20)){
+        stock20 = remote.stock20.slice();
+        saveStock20();
+        renderStock20();
+      }
+      // cache locally so the dashboard still works offline
+      applyLivePrices();
+      saveData(); saveLibrary();
+      populateMonthSelects();
+      renderPerfChart();
+      renderTable();
+      renderOpenPositions();
+      renderAdminList();
+      populateReuseSelect();
+      SYNC_READY = true;
+      refreshConn();
+      const c = new Date();
+      setSyncStatus('Refreshed ' + c.toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit',second:'2-digit'}), true);
+    }
+  }catch(e){
+    // Data bilkul nahi hai? Chup mat baitho — dobara koshish karo.
+    const noData = !picks.length;
+    if(noData && loadRetries < LOAD_RETRY_DELAYS.length){
+      const wait = LOAD_RETRY_DELAYS[loadRetries++];
+      setSyncStatus('Data load nahi hua — dobara koshish (' + loadRetries + '/3)…', false);
+      renderTable();
+      setTimeout(()=> fetchRemoteData(false), wait);
+      return;
+    }
+    setSyncStatus(noData ? 'Data load nahi ho paya — Refresh dabayein'
+      : (manual ? 'Could not reach server — showing last saved data' : 'Offline — showing last saved data'), false);
+  }finally{
+    if(btn){ btn.disabled = false; btn.style.opacity = '1'; }
+  }
+}
+
+
+// Safe local backup of the CURRENT in-memory data (unlike the old stale
+// client-template export, this always reflects what you see on screen).
+function downloadDataJsonBackup(){
+  try{
+    const payload = { updatedAt: new Date().toISOString(), picks: picks, library: stockLibrary, stock20: stock20, reports: monthReports };
+    const blob = new Blob([JSON.stringify(payload)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'data-backup-' + new Date().toISOString().slice(0,10) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    const status = document.getElementById('publishStatus');
+    if(status){ status.textContent = 'Backup downloaded.'; setTimeout(()=>status.textContent='', 4000); }
+  }catch(e){
+    alert('Backup failed: ' + e.message);
+  }
+}
+
+let stock20 = [];
+
+function loadStock20(){
+  // Agar remote list pehle hi aa gayi hai to usi ko rakho.
+  if(SYNC_READY && stock20 && stock20.length){ renderStock20(); return; }
+  try{
+    const raw = LS.get('analystedge_stock20');
+    if(raw) stock20 = JSON.parse(raw);
+  }catch(e){ /* ignore */ }
+  renderStock20();
+}
+
+function saveStock20(){
+  try{ LS.set('analystedge_stock20', JSON.stringify(stock20)); }catch(e){}
+}
+
+function renderStock20(){
+  const el = document.getElementById('stock20List');
+  if(!el) return;
+  const badge = document.getElementById('stock20Count');
+  if(badge) badge.textContent = stock20.length + ' stocks';
+  if(!stock20.length){
+    el.innerHTML = '<div style="padding:12px; color:var(--ink-soft); font-size:15.5px;">List khaali hai — neeche naam add karo ya poori list paste karo.</div>';
+    return;
+  }
+  el.innerHTML = stock20.map((n,i)=>
+    '<div style="display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border-bottom:1px solid var(--border); font-size:16px;">' +
+      '<span><span style="color:var(--ink-soft); font-size:14px; margin-right:8px;">' + (i+1) + '.</span>' + escHtml(n) + '</span>' +
+      '<button onclick="removeStock20(' + i + ')" title="List se hatao" style="background:none; border:none; color:var(--neg); cursor:pointer; font-size:16px; font-weight:700; padding:2px 8px;">✕</button>' +
+    '</div>'
+  ).join('');
+}
+
+function addStock20(){
+  const inp = document.getElementById('stock20Input');
+  const v = inp.value.trim();
+  if(!v) return;
+  if(stock20.some(x => x.toLowerCase() === v.toLowerCase())){
+    alert('"' + v + '" pehle se list mein hai.');
+    return;
+  }
+  stock20.push(v);
+  inp.value = '';
+  saveStock20(); renderStock20(); scheduleAutoSave();
+}
+
+function removeStock20(i){
+  if(!confirm('"' + stock20[i] + '" ko Stock20 list se hatana hai?')) return;
+  stock20.splice(i,1);
+  saveStock20(); renderStock20(); scheduleAutoSave();
+}
+
+function bulkAddStock20(){
+  const ta = document.getElementById('stock20Bulk');
+  const names = ta.value.split(/[\n,]/).map(s => s.trim().toUpperCase()).filter(Boolean);
+  let added = 0;
+  names.forEach(n => {
+    if(!stock20.some(x => x.toLowerCase() === n.toLowerCase())){ stock20.push(n); added++; }
+  });
+  ta.value = '';
+  saveStock20(); renderStock20(); scheduleAutoSave();
+  alert(added + ' naye naam add hue. Total ab: ' + stock20.length + ' stocks.');
+}
+
+/* ============================================================
+   GITHUB PUBLISH — pushes data.json to your GitHub repo so the
+   live client dashboard (GitHub Pages) picks it up instantly.
+   Settings + token are stored ONLY in this browser's localStorage.
+   ============================================================ */
+/* ============================================================
+   AUTO-SAVE  —  har add / edit / delete ke baad data.json
+   apne aap GitHub par push ho jaata hai, so client dashboard,
+   Open Positions aur Monthly Picks sab ek saath update hote hain.
+
+   SAFETY: auto-save tabhi chalta hai jab is session mein online
+   data successfully load ho chuka ho (SYNC_READY). Isse khaali
+   localStorage se live data overwrite hone ka purana bug
+   structurally impossible ho jaata hai.
+   ============================================================ */
+let SYNC_READY = false;
+/* Guards ka kaam aapka MAUJOOD data bachana hai. Agar local khaali hai
+   to bachane ko kuch hai hi nahi — us haalat mein block karna dashboard
+   ko hamesha ke liye blank kar deta tha. */
+function haveLocalData(){
+  return picks.length > 0;
+}
+let loadRetries = 0;
+const LOAD_RETRY_DELAYS = [1500, 4000, 10000];   // network hiccup / Pages redeploy
+let autoTimer = null;
+let autoBusy = false;
+let autoPending = false;
+
+function autoPill(msg, tone){
+  const el = document.getElementById('autoPill');
+  if(!el) return;
+  if(!msg){ el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  el.style.color = tone === 'ok' ? 'var(--pos)' : tone === 'err' ? 'var(--neg)' : 'var(--ink-soft)';
+  el.textContent = msg;
+  if(tone === 'ok'){
+    clearTimeout(el._t);
+    el._t = setTimeout(()=>{ el.style.display = 'none'; }, 4000);
+  }
+}
+
+const GH_SETTINGS_KEY = 'analystedge_gh_settings';
+
+/* Repo details fixed hain — inhe kabhi bharna nahi padta. */
+const GH_OWNER  = 'RaDivyani';
+const GH_REPO   = 'analystedge';
+const GH_BRANCH = 'main';
+
+function getToken(){
+  try{
+    const raw = LS.get(GH_SETTINGS_KEY);
+    if(!raw) return '';
+    const o = JSON.parse(raw);
+    return (o && o.token) ? String(o.token).trim() : '';
+  }catch(e){ return ''; }
+}
+function setToken(t){
+  try{
+    LS.set(GH_SETTINGS_KEY, JSON.stringify({
+      owner: GH_OWNER, repo: GH_REPO, branch: GH_BRANCH, token: String(t||'').trim()
+    }));
+  }catch(e){}
+}
+function getGhSettings(){
+  return { owner: GH_OWNER, repo: GH_REPO, branch: GH_BRANCH, token: getToken() };
+}
+
+/* Connection strip. Sirf batata hai — koi button dabana nahi hota. */
+function setConn(state, msg){
+  const dot = document.getElementById('connDot');
+  const txt = document.getElementById('connText');
+  if(!dot || !txt) return;
+  const col = state === 'ok' ? 'var(--pos)' : state === 'busy' ? 'var(--hold)' : state === 'err' ? 'var(--neg)' : 'var(--ink-soft)';
+  dot.style.background = col;
+  txt.style.color = col;
+  txt.textContent = msg;
+}
+function refreshConn(){
+  if(!getToken()) return setConn('err', 'Access key missing — auto-save band hai');
+  if(!SYNC_READY) return setConn('idle', 'Online data load ho raha hai…');
+  if(autoBusy || autoPending) return setConn('busy', 'Saving…');
+  setConn('ok', 'Auto-save ON — jo bhi likhengi, sab jagah apne aap chala jayega');
+}
+
+/* Token sirf pehli baar poocha jaata hai (per browser), phir kabhi nahi. */
+function askForToken(force){
+  if(!force && getToken()) { refreshConn(); return Promise.resolve(true); }
+  return new Promise(function(resolve){
+    const ov = document.getElementById('tkOverlay');
+    const inp = document.getElementById('tkInput');
+    const err = document.getElementById('tkError');
+    const go = document.getElementById('tkGo');
+    const cancel = document.getElementById('tkCancel');
+    err.textContent = ''; inp.value = '';
+    ov.style.display = 'flex';
+    setTimeout(()=> inp.focus(), 60);
+    function close(v){ ov.style.display='none'; go.onclick=null; cancel.onclick=null; inp.onkeydown=null; resolve(v); }
+    async function submit(){
+      const t = inp.value.trim();
+      if(!t){ err.textContent = 'Key daalna zaroori hai.'; return; }
+      err.textContent = 'Checking…';
+      try{
+        const res = await fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO, {
+          headers: { 'Authorization': 'Bearer ' + t, 'Accept': 'application/vnd.github+json' }
+        });
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+      }catch(e){
+        err.textContent = 'Ye key kaam nahi kar rahi (' + e.message + '). Dobara copy karke daalein.';
+        return;
+      }
+      setToken(t);
+      // Token ko password se seal karke repo mein daalo, taaki employees
+      // ko sirf password chahiye ho, key kabhi nahi.
+      if(cryptoOk() && ADMIN_PW_CACHE){
+        err.textContent = 'Sealing for your team…';
+        try{
+          await putKeyBlob(await encryptToken(ADMIN_PW_CACHE, t), t);
+        }catch(e){
+          err.style.color = 'var(--neg)';
+          err.textContent = 'Key save hui, lekin team ke liye seal nahi ho payi: ' + e.message;
+          setTimeout(()=>{ refreshConn(); close(true); }, 2500);
+          return;
+        }
+      }
+      refreshConn();
+      close(true);
+    }
+    go.onclick = submit;
+    cancel.onclick = function(){ close(false); };
+    inp.onkeydown = function(e){ if(e.key === 'Enter') submit(); };
+  });
+}
+
+// Unicode-safe base64 for large JSON payloads (PDFs included)
+function toBase64Unicode(str){
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  const CHUNK = 0x8000;
+  for(let i = 0; i < bytes.length; i += CHUNK){
+    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
+  }
+  return btoa(bin);
+}
+
+async function ghGetFileSha(s){
+  // Directory listing returns the blob sha even for files >1MB,
+  // which a direct file GET would refuse.
+  const res = await fetch('https://api.github.com/repos/' + s.owner + '/' + s.repo + '/contents/?ref=' + encodeURIComponent(s.branch), {
+    headers: { 'Authorization': 'Bearer ' + s.token, 'Accept': 'application/vnd.github+json' }
+  });
+  if(!res.ok) return null;
+  const list = await res.json();
+  if(!Array.isArray(list)) return null;
+  const f = list.find(x => x.name === 'data.json');
+  return f ? f.sha : null;
+}
+
+async function pushDataJson(s){
+  const payload = {
+    updatedAt: new Date(Date.now() + 1000).toISOString(),
+    picks: picks,
+    library: stockLibrary,
+    stock20: stock20,
+    reports: monthReports
+  };
+  const content = toBase64Unicode(JSON.stringify(payload));
+  const sha = await ghGetFileSha(s);
+  const body = { message: 'Update picks — ' + new Date().toLocaleString('en-IN'), content: content, branch: s.branch };
+  if(sha) body.sha = sha;
+  const res = await fetch('https://api.github.com/repos/' + s.owner + '/' + s.repo + '/contents/data.json', {
+    method: 'PUT',
+    headers: { 'Authorization': 'Bearer ' + s.token, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if(!res.ok){
+    const err = await res.json().catch(()=>({}));
+    throw new Error(err.message || ('HTTP ' + res.status));
+  }
+  noteUpdated(payload.updatedAt);
+}
+
+/* Debounced auto-save. Called after every data change. */
+function scheduleAutoSave(){
+  markDirty();                     // change ho gaya — jab tak push confirm na ho, DIRTY
+  if(!SYNC_READY){
+    failDirty('online data load nahi hua tha');
+    refreshConn();
+    return;
+  }
+  if(!getToken()){
+    autoPill('⚠️ Access key missing — save nahi hua', 'err');
+    failDirty('GitHub access key set nahi hai');
+    refreshConn();
+    return;
+  }
+  autoPending = true;
+  autoPill('Saving…');
+  refreshConn();
+  clearTimeout(autoTimer);
+  autoTimer = setTimeout(runAutoSave, 1000);
+}
+
+async function runAutoSave(){
+  if(autoBusy){ autoTimer = setTimeout(runAutoSave, 1500); return; }
+  if(!getToken()){ autoPending = false; refreshConn(); return; }
+  autoBusy = true;
+  refreshConn();
+  try{
+    await pushDataJson(getGhSettings());
+    autoPending = false;
+    clearDirty();
+    autoPill('✅ Saved — sab jagah live', 'ok');
+  }catch(e){
+    // network hiccup: ek baar apne aap dobara try karo
+    LAST_SAVE_ERROR = e.message;
+    autoPill('Retrying…');
+    autoBusy = false;
+    clearTimeout(autoTimer);
+    autoTimer = setTimeout(runAutoSaveFinal, 3000);
+    return;
+  }finally{
+    autoBusy = false;
+    refreshConn();
+  }
+}
+
+/* Banner ka "Save now". Key na ho to maangta hai, phir push karta hai. */
+async function saveNow(){
+  if(!getToken()){
+    const got = await askForToken(true);
+    if(!got) return;
+  }
+  autoPending = true;
+  autoPill('Saving…');
+  refreshConn();
+  clearTimeout(autoTimer);
+  await runAutoSaveFinal();
+  if(!DIRTY){
+    // save ho gaya — ab safely online se latest le lo
+    await fetchRemoteData(true);
+  }
+}
+
+async function runAutoSaveFinal(){
+  if(!getToken()){ autoPending = false; refreshConn(); return; }
+  autoBusy = true;
+  try{
+    await pushDataJson(getGhSettings());
+    autoPending = false;
+    clearDirty();
+    autoPill('✅ Saved — sab jagah live', 'ok');
+  }catch(e){
+    autoPill('❌ Save fail: ' + e.message, 'err');
+    failDirty(e.message);
+  }finally{
+    autoBusy = false;
+    refreshConn();
+  }
+}
+
+loadData();
+loadReports();
+loadDirty();
+maybeRevealAdmin();
+paintLock();
+window.addEventListener('hashchange', maybeRevealAdmin);
+fetchRemoteData(false);
+loadStock20();
+setInterval(()=> fetchRemoteData(false), AUTO_REFRESH_MS);
+
+// Pichhli baar ka save adhoora reh gaya tha? Chup-chaap dobara try karo.
+if(DIRTY){
+  SYNC_READY = true;            // local data hi sach hai, use overwrite mat karo
+  setTimeout(()=>{ if(DIRTY && getToken()) saveNow(); }, 1500);
+}
+
+/* ============================================================
+   STOCK20 — Mid-Cap Movers Watchlist
+   Reads stock20.json (auto-generated daily by GitHub Actions)
+   and renders the live table. Section stays hidden until the
+   file exists and has stocks.
+   ============================================================ */
+function fmtCap(v){
+  if(v == null) return '—';
+  if(v >= 1e12) return '₹' + (v/1e12).toFixed(2) + ' L Cr';
+  if(v >= 1e9)  return '₹' + (v/1e9).toFixed(1) + ' K Cr';
+  if(v >= 1e7)  return '₹' + (v/1e7).toFixed(0) + ' Cr';
+  return '₹' + Math.round(v).toLocaleString('en-IN');
+}
+function pctCell(v){
+  if(v == null) return '<td style="color:var(--ink-soft);">—</td>';
+  const c = v >= 0 ? 'var(--pos)' : 'var(--neg)';
+  const sign = v >= 0 ? '+' : '';
+  return '<td style="color:' + c + '; font-weight:700; white-space:nowrap;">' + sign + v.toFixed(2) + '%</td>';
+}
+function rangeBar(low, high, price){
+  if(low == null || high == null || price == null || high <= low) return '<td style="color:var(--ink-soft);">—</td>';
+  const pos = Math.max(0, Math.min(100, (price - low) / (high - low) * 100));
+  return '<td style="min-width:150px;">' +
+    '<div style="font-size:12.5px; color:var(--ink-soft); display:flex; justify-content:space-between; margin-bottom:3px;"><span>' + low.toFixed(0) + '</span><span>' + high.toFixed(0) + '</span></div>' +
+    '<div style="height:6px; background:var(--surface-2); border:1px solid var(--border); border-radius:100px; position:relative;">' +
+      '<div style="position:absolute; left:' + pos.toFixed(1) + '%; top:50%; transform:translate(-50%,-50%); width:11px; height:11px; border-radius:50%; background:var(--buy); border:2px solid var(--surface);"></div>' +
+    '</div></td>';
+}
+function trendBadge(t){
+  if(!t) return '<td style="color:var(--ink-soft);">—</td>';
+  const map = { 'Uptrend': ['var(--pos)','var(--pos-bg)','▲'], 'Downtrend': ['var(--neg)','var(--neg-bg)','▼'], 'Sideways': ['var(--hold)','var(--hold-bg)','■'] };
+  const m = map[t] || ['var(--ink-soft)','var(--surface-2)','•'];
+  return '<td><span style="display:inline-block; padding:4px 12px; border-radius:100px; font-size:13.5px; font-weight:700; color:' + m[0] + '; background:' + m[1] + '; white-space:nowrap;">' + m[2] + ' ' + t + '</span></td>';
+}
+
+/* Sirf "Added" (abhi open) picks live-update hoti hain. Ek baar "Booked"
+   ho jaane ke baad price/return HAMESHA ke liye frozen (exit ke waqt ki)
+   rehta hai — pehle ye galti se live-recalculate hota rehta tha, jo
+   "Return at Exit" ka poora matlab hi khatam kar deta tha. */
+function applyLivePrices(){
+  if(!Object.keys(livePrices).length) return;
+  picks.forEach(s => {
+    if(s.action !== 'Added') return;
+    const p = livePrices[symKey(s.name)] ?? livePrices[symKey(s.ticker)];
+    if(p != null && s.priceAdded){
+      s.currentPrice = p;
+      s.returnPct = (p - s.priceAdded) / s.priceAdded * 100;
+    }
+  });
+}
+
+/* ============================================================
+   LIVE PRICES — continuous intraday quotes.
+   stock20.json (daily robot) gives the baseline; this polls
+   Yahoo Finance directly so Current Price keeps ticking while
+   the market is open. Yahoo sends no CORS header, so we fall
+   back through public read-only proxies. Whichever source
+   answers first for a symbol is remembered and tried first
+   next time, to keep request volume low.
+   ============================================================ */
+const LIVE_FAST_MS = 30 * 1000;      // during market hours
+const LIVE_SLOW_MS = 5 * 60 * 1000;  // when closed
+let liveTimer = null, prevPrices = {}, lastLiveAt = null, preferredSrc = {}, liveSource = null;
+
+function istNow(){
+  return new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+}
+function marketOpen(){
+  const d = istNow(), day = d.getDay();
+  if(day === 0 || day === 6) return false;
+  const mins = d.getHours() * 60 + d.getMinutes();
+  return mins >= 555 && mins <= 935;   // 09:15 – 15:35 IST
+}
+
+function quoteSources(sym){
+  const y = 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(sym) + '.NS?interval=1m&range=1d';
+  return [
+    y,
+    'https://api.allorigins.win/raw?url=' + encodeURIComponent(y),
+    'https://corsproxy.io/?' + encodeURIComponent(y)
+  ];
+}
+
+async function fetchLiveQuote(sym){
+  let urls = quoteSources(sym);
+  if(preferredSrc[sym] != null){
+    const i = preferredSrc[sym];
+    urls = [urls[i]].concat(urls.filter((_, j) => j !== i));
+  }
+  for(let k = 0; k < urls.length; k++){
+    try{
+      const res = await fetch(urls[k], { cache: 'no-store' });
+      if(!res.ok) continue;
+      const d = await res.json();
+      const r = d && d.chart && d.chart.result && d.chart.result[0];
+      const p = r && r.meta && (r.meta.regularMarketPrice ?? r.meta.previousClose);
+      if(typeof p === 'number'){
+        preferredSrc[sym] = quoteSources(sym).indexOf(urls[k]);
+        return p;
+      }
+    }catch(e){ /* next source */ }
+  }
+  return null;
+}
+
+function liveSymbols(){
+  const month = document.getElementById('monthSelect').value;
+  const seen = {};
+  // Sirf abhi visible "Added" (open) picks ke liye live quote maangte
+  // hain — Booked wali price ab kabhi live-update nahi hoti (frozen
+  // exit stats), isliye unke liye fetch karna waste hai.
+  rowsForMonth(month).forEach(s => {
+    if(s._view !== 'Added') return;
+    const k = symKey(s.name);
+    if(k && /^[A-Z0-9]{2,20}$/.test(k)) seen[k] = 1;
+  });
+  return Object.keys(seen);
+}
+
+function setLiveStatus(){
+  const el = document.getElementById('liveStatus');
+  if(!el) return;
+  if(!lastLiveAt){ el.textContent = ''; return; }
+  const t = lastLiveAt.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+  const label = marketOpen() ? (liveSource === 'direct' ? 'Live' : 'Live (5-min)') : 'Last close';
+  el.innerHTML = (marketOpen() ? '<span class="cp-dot"></span>' : '') + label + ' · ' + t;
+}
+
+function flashChanges(){
+  document.querySelectorAll('.cp-cell').forEach(td => {
+    const k = symKey(td.getAttribute('data-cp'));
+    const now = livePrices[k], was = prevPrices[k];
+    if(now == null || was == null || now === was) return;
+    td.classList.remove('cp-up', 'cp-dn');
+    void td.offsetWidth;
+    td.classList.add(now > was ? 'cp-up' : 'cp-dn');
+  });
+}
+
+/* Primary feed: live.json, written every 5 minutes by our own GitHub robot.
+   Same-origin, so it always loads — no CORS, no proxy, no API key. */
+async function fetchLiveJson(){
+  try{
+    const res = await fetch('live.json?v=' + Date.now(), { cache: 'no-store' });
+    if(!res.ok) return null;
+    const d = await res.json();
+    if(!d || !d.quotes) return null;
+    let any = false;
+    Object.keys(d.quotes).forEach(k => {
+      const p = d.quotes[k] && d.quotes[k].price;
+      if(typeof p === 'number'){ livePrices[symKey(k)] = p; any = true; }
+    });
+    return any ? d : null;
+  }catch(e){ return null; }
+}
+
+async function refreshLivePrices(){
+  const syms = liveSymbols();
+  if(!syms.length) return;
+  prevPrices = Object.assign({}, livePrices);
+  let any = false;
+
+  const robot = await fetchLiveJson();
+  if(robot){ any = true; liveSource = 'robot'; lastLiveAt = robot.updatedAt ? new Date(robot.updatedAt) : new Date(); }
+
+  // Bonus layer: if the browser can reach Yahoo directly, use the fresher tick.
+  const out = await Promise.all(syms.map(async s => ({ s, p: await fetchLiveQuote(s) })));
+  out.forEach(r => { if(r.p != null){ livePrices[r.s] = r.p; any = true; liveSource = 'direct'; } });
+  if(liveSource === 'direct') lastLiveAt = new Date();
+
+  if(!any) return;
+  applyLivePrices();
+  renderPerfChart();
+  renderTable();
+  setLiveStatus();
+  flashChanges();
+}
+
+function startLivePolling(){
+  if(liveTimer) clearTimeout(liveTimer);
+  const tick = async () => {
+    await refreshLivePrices();
+    liveTimer = setTimeout(tick, marketOpen() ? LIVE_FAST_MS : LIVE_SLOW_MS);
+  };
+  tick();
+}
+
+/* Sector label: prefer whatever the robot wrote, else look the symbol up
+   in our own picks so the column fills in even before the next robot run. */
+function sectorFor(s){
+  if(s.sector) return s.sector;
+  const k = symKey(s.symbol);
+  let found = null;
+  picks.forEach(p => {
+    if(!found && (symKey(p.name) === k || symKey(p.ticker) === k)) found = p.sector;
+  });
+  return (found && found !== 'General') ? found : '—';
+}
+
+async function fetchStock20(){
+  try{
+    const res = await fetch('stock20.json?v=' + Date.now(), { cache: 'no-store' });
+    if(!res.ok) return;
+    const d = await res.json();
+    if(!d || !Array.isArray(d.stocks) || !d.stocks.length) return;
+    livePrices = {};
+    d.stocks.forEach(s => { if(s.price != null) livePrices[symKey(s.symbol)] = s.price; });
+    applyLivePrices(); renderPerfChart(); renderTable();
+    stock20Data = d;
+    renderStock20Table();
+    const t0 = d.updatedAt ? new Date(d.updatedAt) : null;
+    document.getElementById('stock20Updated').textContent = t0 ? 'Updated ' + t0.toLocaleDateString('en-IN',{day:'numeric',month:'short'}) + ', ' + t0.toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'}) : '';
+    document.getElementById('stock20Section').style.display = 'block';
+  }catch(e){ /* file not there yet — keep section hidden */ }
+}
+
+let stock20Data = null;
+
+function renderStock20Table(){
+  const d = stock20Data;
+  if(!d || !Array.isArray(d.stocks)) return;
+  const body = document.getElementById('stock20Body');
+  const q = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+  const rows = d.stocks.filter(s =>
+    !q || String(s.name || '').toLowerCase().includes(q)
+       || String(s.symbol || '').toLowerCase().includes(q)
+       || String(sectorFor(s)).toLowerCase().includes(q));
+  body.innerHTML = rows.map(s =>
+      '<tr style="cursor:default;">' +
+        '<td><div style="font-weight:700;">' + (s.name || s.symbol) + '</div><div style="font-size:13px; color:var(--ink-soft); font-family:var(--font-mono);">' + s.symbol + '</div></td>' +
+        '<td style="font-size:14px; color:var(--ink-soft); min-width:130px;">' + sectorFor(s) + '</td>' +
+        '<td style="font-family:var(--font-mono); font-weight:700; white-space:nowrap;">' + (s.price != null ? '₹' + s.price.toLocaleString('en-IN') : '—') + '</td>' +
+        pctCell(s.dayPct) +
+        pctCell(s.m1Pct) +
+        rangeBar(s.w52Low, s.w52High, s.price) +
+        '<td style="white-space:nowrap;">' + fmtCap(s.mktCap) + '</td>' +
+        '<td>' + (s.pe != null ? s.pe : '—') + '</td>' +
+        '<td>' + (s.pb != null ? s.pb : '—') + '</td>' +
+        '<td>' + (s.divYield != null ? s.divYield + '%' : '—') + '</td>' +
+        trendBadge(s.trend) +
+      '</tr>'
+    ).join('') || '<tr><td colspan="11" style="text-align:center; color:var(--ink-soft); padding:24px;">No stocks match your search.</td></tr>';
+}
+fetchStock20();
+setInterval(fetchStock20, AUTO_REFRESH_MS);
+startLivePolling();
+document.getElementById('monthSelect').addEventListener('change', refreshLivePrices);
+</script>
+
+</body>
+</html>
