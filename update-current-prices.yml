@@ -1,0 +1,44 @@
+name: Update Current Prices (Hourly)
+
+on:
+  schedule:
+    # Har ghante, 03:45-09:45 UTC = 9:15 AM - 3:15 PM IST, Monday-Friday.
+    # Ye data.json ke andar har open pick ka currentPrice/returnPct
+    # PERMANENTLY update karta hai (live.json ke alag — wo sirf browser
+    # me dikhata hai, ye asal stored value badalta hai).
+    - cron: '45 3-9 * * 1-5'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: current-prices
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install yfinance
+
+      - name: Update current prices in data.json
+        run: python scripts/update_current_prices.py
+
+      - name: Commit data.json
+        run: |
+          git config user.name "price-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data.json
+          git diff --cached --quiet || git commit -m "Update current prices — $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git pull --rebase --autostash origin main || true
+          git push
