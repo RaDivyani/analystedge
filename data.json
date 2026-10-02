@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-10-01T10:28:28.897272+00:00",
+ "updatedAt": "2026-10-02T10:03:45.243924+00:00",
  "picks": [
   {
    "ticker": "KPITTECH",
@@ -90,8 +90,8 @@
    "name": "Akums Drugs and Pharmaceuticals Ltd",
    "sector": "Healthcare",
    "priceAdded": 658,
-   "currentPrice": 813.1,
-   "returnPct": 23.571428571428573,
+   "currentPrice": 815.8,
+   "returnPct": 23.981762917933125,
    "action": "Added",
    "dateRemoved": null,
    "rationale": "Research pending — details will be updated.",
@@ -174,8 +174,8 @@
    "name": "Jayaswal Neco Industries Ltd",
    "sector": "Iron & Steel Products",
    "priceAdded": 86.2,
-   "currentPrice": 91.28,
-   "returnPct": 5.893271461716935,
+   "currentPrice": 92.0,
+   "returnPct": 6.728538283062642,
    "action": "Added",
    "rationale": "Research pending — details will be updated.",
    "chart": [
@@ -216,8 +216,8 @@
    "name": "IIFL Securities Ltd",
    "sector": "Capital Markets",
    "priceAdded": 337.8,
-   "currentPrice": 345.6,
-   "returnPct": 2.3090586145648344,
+   "currentPrice": 345.0,
+   "returnPct": 2.131438721136764,
    "action": "Added",
    "rationale": "Research pending — details will be updated.",
    "chart": [
@@ -258,8 +258,8 @@
    "name": "The Karnataka Bank Limited",
    "sector": "Private Sector Bank",
    "priceAdded": 284.75,
-   "currentPrice": 321.6,
-   "returnPct": 12.941176470588243,
+   "currentPrice": 323.9,
+   "returnPct": 13.748902546093056,
    "action": "Added",
    "rationale": "Research pending — details will be updated.",
    "chart": [
@@ -300,8 +300,8 @@
    "name": "Tamilnad Mercantile Bank Limited",
    "sector": "Private Sector Bank",
    "priceAdded": 851.7,
-   "currentPrice": 872.05,
-   "returnPct": 2.3893389691205713,
+   "currentPrice": 885.0,
+   "returnPct": 3.909827404015493,
    "action": "Added",
    "rationale": "Research pending — details will be updated.",
    "chart": [
@@ -342,8 +342,8 @@
    "name": "DCB Bank Limited",
    "sector": "Private Sector Bank",
    "priceAdded": 186.09,
-   "currentPrice": 199.71,
-   "returnPct": 7.319039174592941,
+   "currentPrice": 200.0,
+   "returnPct": 7.474877747326561,
    "action": "Added",
    "rationale": "Cheap, Fast-Growing Bank on the Rise\nDCB Bank was selected by our ML engine for its rare combination of strong market momentum, fast business growth, and an attractive price tag. The stock has surged ~39% over the past year, yet still trades at just 7.6x earnings and below its book value — a bargain for a bank growing this quickly. Profits hit a record high for the fourth quarter in a row, with earnings up ~36% year-over-year. Loans grew ~17% and deposits ~20%, while bad loans are actually improving. Analysts overwhelmingly back it (16 buys, 0 holds), with price targets pointing to 25-40%+ upside from current levels. Growth isn't slowing down either — management is targeting 18-20% expansion annually over the next two years.",
    "chart": [
@@ -427,8 +427,8 @@
    "name": "Cyient DLM Ltd",
    "sector": "Electronics Manufacturing",
    "priceAdded": 856.75,
-   "currentPrice": 893.9,
-   "returnPct": 4.336154070615696,
+   "currentPrice": 890.0,
+   "returnPct": 3.8809454333236064,
    "action": "Added",
    "rationale": "Research pending — details will be updated.",
    "chart": [
@@ -469,8 +469,8 @@
    "name": "Triveni Engineering and Industries Ltd",
    "sector": "Sugar&Distillery",
    "priceAdded": 277.95,
-   "currentPrice": 230.92,
-   "returnPct": -16.920309408166936,
+   "currentPrice": 232.7,
+   "returnPct": -16.279906457996045,
    "action": "Added",
    "rationale": "Research pending — details will be updated.",
    "chart": [
@@ -511,8 +511,8 @@
    "name": "Paras Defence and Space Technologies Ltd",
    "sector": "Aerospace & Defense",
    "priceAdded": 1380.1,
-   "currentPrice": 1276.0,
-   "returnPct": -7.5429316716179935,
+   "currentPrice": 1278.0,
+   "returnPct": -7.398014636620529,
    "action": "Added",
    "rationale": "Research pending — details will be updated.",
    "chart": [
