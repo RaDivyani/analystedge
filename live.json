@@ -1,6 +1,6 @@
 {
- "updatedAt": "2026-10-05T09:45:22.569533+00:00",
- "updatedIST": "05 Oct 2026, 03:15:22 PM",
+ "updatedAt": "2026-10-05T18:50:55.386211+00:00",
+ "updatedIST": "06 Oct 2026, 12:20:55 AM",
  "quotes": {
   "KPITTECH": {
    "price": 489.5,
@@ -8,14 +8,14 @@
    "dayPct": -0.51
   },
   "AKUMS": {
-   "price": 803.45,
+   "price": 801.35,
    "prevClose": 815.8,
-   "dayPct": -1.51
+   "dayPct": -1.77
   },
   "JAYNECOIND": {
-   "price": 91.03,
+   "price": 91.0,
    "prevClose": 91.76,
-   "dayPct": -0.8
+   "dayPct": -0.83
   },
   "IIFLCAPS": {
    "price": 345.2,
@@ -23,34 +23,34 @@
    "dayPct": -0.12
   },
   "KTKBANK": {
-   "price": 326.5,
+   "price": 326.75,
    "prevClose": 325.0,
-   "dayPct": 0.46
+   "dayPct": 0.54
   },
   "TMB": {
-   "price": 888.65,
+   "price": 886.25,
    "prevClose": 878.5,
-   "dayPct": 1.16
+   "dayPct": 0.88
   },
   "DCBBANK": {
-   "price": 197.1,
+   "price": 197.36,
    "prevClose": 199.71,
-   "dayPct": -1.31
+   "dayPct": -1.18
   },
   "CYIENTDLM": {
-   "price": 948.7,
+   "price": 946.8,
    "prevClose": 893.9,
-   "dayPct": 6.13
+   "dayPct": 5.92
   },
   "TRIVENI": {
-   "price": 237.72,
+   "price": 237.22,
    "prevClose": 232.7,
-   "dayPct": 2.16
+   "dayPct": 1.94
   },
   "PARAS": {
-   "price": 1264.8,
+   "price": 1266.2,
    "prevClose": 1278.0,
-   "dayPct": -1.03
+   "dayPct": -0.92
   }
  }
 }
