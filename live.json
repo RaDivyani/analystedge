@@ -1,6 +1,6 @@
 {
- "updatedAt": "2026-10-20T08:00:04.818237+00:00",
- "updatedIST": "20 Oct 2026, 01:30:04 PM",
+ "updatedAt": "2026-10-20T13:23:51.077596+00:00",
+ "updatedIST": "20 Oct 2026, 06:53:51 PM",
  "quotes": {
   "KPITTECH": {
    "price": 536.95,
@@ -36,6 +36,11 @@
    "price": 210.38,
    "prevClose": 210.15,
    "dayPct": 0.11
+  },
+  "INDIGRID": {
+   "price": 170.06,
+   "prevClose": 169.21,
+   "dayPct": 0.5
   },
   "CYIENTDLM": {
    "price": 747.1,
