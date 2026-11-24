@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-11-23T13:41:10.583542+00:00",
+ "updatedAt": "2026-11-24T14:18:10.157415+00:00",
  "picks": [
   {
    "ticker": "KPITTECH",
@@ -384,8 +384,8 @@
    "name": "IndiGrid Infrastructure Trust Unit",
    "sector": "Power/Infrastructure",
    "priceAdded": 174.91,
-   "currentPrice": 172.55,
-   "returnPct": -1.3492653364587417,
+   "currentPrice": 164.99,
+   "returnPct": -5.671488193928298,
    "action": "Added",
    "rationale": "Research pending — details will be updated.",
    "chart": [
